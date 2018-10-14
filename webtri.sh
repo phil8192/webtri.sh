@@ -56,7 +56,7 @@ function get_quality {
 
 function get_report {
 	site_id=$1
-	interval=$2
+	interval=$2 # daily, monthly, annual
 	start=$3
 	end=$4
 
@@ -82,9 +82,19 @@ function get_report {
 	done
 }
 
+function get_sites {
+	site_ids=$1
+	echo '"Id","Name","Description","Longitude","Latitude","Status"'
+	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sites/$site_ids" \
+			|jq -r '.sites | .[] | map(.) |@csv'
+}
+
 #get_report 5688 Daily 01012015 01012018
-#get_report 5688 Daily 01012018 05012018
+#get_report 5688 daily 01012018 05012018
 #get_area 1
 #get_area
 #get_quality 5688 01012018 04012018 daily
-get_quality 5688 01012018 04012018 overall
+#get_quality 5688 01012018 04012018 overall
+#get_sites
+#get_sites 5688
+get_sites 5688,5689
