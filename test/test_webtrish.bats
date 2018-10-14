@@ -32,6 +32,7 @@ EOF
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "id,name,description,x_lon,x_lat,y_lon,y_lat" ]
   [ "${lines[1]}" = "1,lala,descr,-1.123,53.123,-1.55,54.1" ]
+  [ ${#lines[@]} == 2 ]
 }
 
 @test "get_area" {
@@ -73,6 +74,7 @@ EOF
   [ "${lines[0]}" = "id,name,description,x_lon,x_lat,y_lon,y_lat" ]
   [ "${lines[1]}" = "1,lala,descr,-1.123,53.123,-1.55,54.1" ]
   [ "${lines[2]}" = "2,heh,x,1,2,3,4" ]
+  [ ${#lines[@]} == 3 ]
 }
 
 @test "get_quality 5688 01012018 04012018 daily" {
@@ -114,7 +116,7 @@ EOF
   [ "${lines[2]}" = "2018-01-02T00:00:00,100" ]
   [ "${lines[3]}" = "2018-01-03T00:00:00,100" ]
   [ "${lines[4]}" = "2018-01-04T00:00:00,100" ]
-
+  [ ${#lines[@]} == 5 ]
 }
 
 @test "get_quality 5688,5699 01012018 04012018 overall" {
@@ -142,9 +144,10 @@ EOF
   # note that remote will actually return 67 due to bug.
   # client corrects for this.
   [ "${lines[1]}" = "50" ]
+  [ ${#lines[@]} == 2 ]
 }
 
-@test "get_report 5688 Daily 01012015 01012018" {
+@test "get_report 5688 daily 01012015 01012018" {
 
   curl()
   {
@@ -276,10 +279,88 @@ EOF
   [ ${lines[1]} = "M602/6051A,2015-01-01T00:00:00,00:59:00,,,,,,,,,,,,,,,,,,,,,332" ]
   [ ${lines[2]} = "M602/6051A,2015-01-01T00:00:00,01:59:00,,,,,,,,,,,,,,,,,,,,,396" ]
   [ ${lines[3]} = "M602/6051A,2015-01-01T00:00:00,00:59:00,,,,,,,,,,,,5,,,,,,,,,100" ]
+  [ ${#lines[@]} == 4 ]
 }
 
 @test "get_report 5688 daily 01012018 01012018" {
 
+  curl()
+  {
+    cat << EOF
+    {
+      "Header": {
+        "row_count": 2,
+        "start_date": "01012018",
+        "end_date": "01012018",
+        "links": []
+      },
+      "Rows": [
+        {
+          "Site Name": "M602/6051A",
+          "Report Date": "2018-01-01T00:00:00",
+          "Time Period Ending": "00:14:00",
+          "Time Interval": "0",
+          "0 - 520 cm": "78",
+          "521 - 660 cm": "2",
+          "661 - 1160 cm": "0",
+          "1160+ cm": "0",
+          "0 - 10 mph": "",
+          "11 - 15 mph": "",
+          "16 - 20 mph": "",
+          "21 - 25 mph": "",
+          "26 - 30 mph": "",
+          "31 - 35 mph": "",
+          "36 - 40 mph": "",
+          "41 - 45 mph": "",
+          "46 - 50 mph": "",
+          "51 - 55 mph": "",
+          "56 - 60 mph": "",
+          "61 - 70 mph": "",
+          "71 - 80 mph": "",
+          "80+ mph": "",
+          "Avg mph": "62",
+          "Total Volume": "80"
+        },
+        {
+          "Site Name": "M602/6051A",
+          "Report Date": "2018-01-01T00:00:00",
+          "Time Period Ending": "00:29:00",
+          "Time Interval": "1",
+          "0 - 520 cm": "72",
+          "521 - 660 cm": "1",
+          "661 - 1160 cm": "0",
+          "1160+ cm": "0",
+          "0 - 10 mph": "",
+          "11 - 15 mph": "",
+          "16 - 20 mph": "",
+          "21 - 25 mph": "",
+          "26 - 30 mph": "",
+          "31 - 35 mph": "",
+          "36 - 40 mph": "",
+          "41 - 45 mph": "",
+          "46 - 50 mph": "",
+          "51 - 55 mph": "",
+          "56 - 60 mph": "",
+          "61 - 70 mph": "",
+          "71 - 80 mph": "",
+          "80+ mph": "",
+          "Avg mph": "62",
+          "Total Volume": "73"
+        }
+      ]
+    }
+EOF
+  }
+
+  run get_report 5688 daily 01012018 01012018
+
+  echo "result = $output"
+
+  [ "$status" -eq 0 ]
+  [ ${lines[0]} = "site_name,report_date,time_period_end,interval,length_0_520_cm,length_521_660_cm,length_661_1160_cm,length_1160_plus_cm,speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_volume" ]
+  [ ${lines[1]} = "M602/6051A,2018-01-01T00:00:00,00:14:00,0,78,2,0,0,,,,,,,,,,,,,,,62,80" ]
+  [ ${lines[2]} = "M602/6051A,2018-01-01T00:00:00,00:29:00,1,72,1,0,0,,,,,,,,,,,,,,,62,73" ]
+  [ ${#lines[@]} == 3 ]
 }
 
 @test "get_sites" {
