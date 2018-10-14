@@ -6,7 +6,7 @@ MAX_ROWS=40000
 
 function get_area {
 	id=$1 # note: api supposed to accept comma separated list of ids. however only works for 1 id.
-	echo '"Id","Name","Description","XLongitude","YLongitude","YLatitude"'
+	echo '"Id","Name","Description","XLongitude","XLatitude","YLongitude","YLatitude"'
 	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/areas/$id" \
 			|jq -r '.areas? |.[] // [] |join(",")'
 }
@@ -106,14 +106,14 @@ function get_site_by_type {
 	fi
 }
 
-#get_report 5688 Daily 01012015 01012018
-#get_report 5688 daily 01012018 05012018
-#get_area 1
+get_area 1
 #get_area
 #get_quality 5688 01012018 04012018 daily
 #get_quality 5688 01012018 04012018 overall
+#get_report 5688 Daily 01012015 01012018
+#get_report 5688 daily 01012018 05012018
 #get_sites
 #get_sites 5688
 #get_sites 5688,5689
 #get_site_by_type
-get_site_by_type 1
+#get_site_by_type 1
