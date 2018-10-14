@@ -89,6 +89,12 @@ function get_sites {
 			|jq -r '.sites | .[] | map(.) |@csv'
 }
 
+function get_site_types {
+	echo '"Id","Description"'
+	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes" \
+			|jq -r '.sitetypes | .[] |join(",")'
+}
+
 #get_report 5688 Daily 01012015 01012018
 #get_report 5688 daily 01012018 05012018
 #get_area 1
@@ -97,4 +103,5 @@ function get_sites {
 #get_quality 5688 01012018 04012018 overall
 #get_sites
 #get_sites 5688
-get_sites 5688,5689
+#get_sites 5688,5689
+get_site_types
