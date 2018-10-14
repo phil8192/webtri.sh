@@ -77,6 +77,44 @@ EOF
 
 @test "get_quality 5688 01012018 04012018 daily" {
 
+  curl()
+  {
+    cat << EOF
+    {
+      "row_count": 4,
+      "Qualities": [
+      {
+        "Date": "2018-01-01T00:00:00",
+        "Quality": 100
+      },
+      {
+        "Date": "2018-01-02T00:00:00",
+        "Quality": 100
+      },
+      {
+        "Date": "2018-01-03T00:00:00",
+        "Quality": 100
+      },
+      {
+        "Date": "2018-01-04T00:00:00",
+        "Quality": 100
+      }
+      ]
+    }
+EOF
+  }
+
+  run get_quality 5688 01012018 04012018 daily
+
+  echo "result = $output"
+
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "date,quality" ]
+  [ "${lines[1]}" = "2018-01-01T00:00:00,100" ]
+  [ "${lines[2]}" = "2018-01-02T00:00:00,100" ]
+  [ "${lines[3]}" = "2018-01-03T00:00:00,100" ]
+  [ "${lines[4]}" = "2018-01-04T00:00:00,100" ]
+
 }
 
 @test "get_quality 5688,5699 01012018 04012018 overall" {
