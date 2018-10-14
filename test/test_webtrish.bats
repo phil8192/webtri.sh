@@ -36,6 +36,43 @@ EOF
 
 @test "get_area" {
 
+  curl()
+  {
+    cat << EOF
+    {
+      "row_count": 2,
+      "areas": [
+        {
+          "Id": "1",
+          "Name": "lala",
+          "Description": "descr",
+          "XLongitude": "-1.123",
+          "XLatitude": "53.123",
+          "YLongitude": "-1.55",
+          "YLatitude": "54.1"
+        },
+        {
+          "Id": "2",
+          "Name": "heh",
+          "Description": "x",
+          "XLongitude": "1",
+          "XLatitude": "2",
+          "YLongitude": "3",
+          "YLatitude": "4"
+        }
+      ]
+    }
+EOF
+  }
+
+  run get_area
+
+  echo "result = $output"
+
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "id,name,description,x_lon,x_lat,y_lon,y_lat" ]
+  [ "${lines[1]}" = "1,lala,descr,-1.123,53.123,-1.55,54.1" ]
+  [ "${lines[2]}" = "2,heh,x,1,2,3,4" ]
 }
 
 @test "get_quality 5688 01012018 04012018 daily" {
