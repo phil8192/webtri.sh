@@ -1,23 +1,25 @@
-#!/bin/bash
+#!/bin/sh
 
 ENDPOINT="http://webtris.highwaysengland.co.uk/api/v1.0"
 MAX_ROWS=40000
 
 
-function get_area {
+get_area()
+{
 	id=$1 # note: api supposed to accept comma separated list of ids. however only works for 1 id.
 	echo "id,name,description,x_lon,x_lat,y_lon,y_lat"
 	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/areas/$id" \
 			|jq -r '.areas? |.[] // [] |join(",")'
 }
 
-function get_quality {
+get_quality()
+{
 	sites=$1 # only 1 site for daily
 	start=$2
 	end=$3
 	breakdown=$4 # overall, daily
 
-	if [ $breakdown == "overall" ] ;then
+	if [ $breakdown = "overall" ] ;then
 		echo "quality"
 		# there is a bug in the api:
 		# curl -X GET --header 'Accept: application/json' 'http://webtris.highwaysengland.co.uk/api/v1.0/quality/overall?sites=5688%2C5801&start_date=01012018&end_date=03012018'
@@ -46,7 +48,7 @@ function get_quality {
 		days=$((1 + end_date - start_date))
 		printf "%.f\n" $(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/overall?sites=$sites&start_date=$start&end_date=$end" \
 				|jq -r --arg days $days '.data_quality * (([$days |tonumber, 2] |max) -1) / ($days |tonumber)')
-	elif [ $breakdown == "daily" ] ;then
+	elif [ $breakdown = "daily" ] ;then
 		echo "date,quality"
 		curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/daily?siteId=$sites&start_date=$start&end_date=$end" \
 			|jq -r '.Qualities |.[] |map(.) |@csv' \
@@ -57,7 +59,8 @@ function get_quality {
 	fi
 }
 
-function get_report {
+get_report()
+{
 	site_id=$1
 	interval=$2 # daily, monthly, annual
 	start=$3
@@ -77,15 +80,18 @@ function get_report {
 		if [ $(jq -r 'type' report.json) != "object" ] ;then
 			echo "=== error ===" >&2
 			cat report.json >&2
+			rm -f report.json
 			exit 1
 		fi
 		jq -r '.Rows |.[] |join(",")' report.json
 		href=$(jq -r '.Header.links |.[] |select(.rel == "nextPage") |.href' report.json)
+		rm -f report.json
 		exit 0
 	done
 }
 
-function get_sites {
+get_sites()
+{
 	site_ids=$1
 	echo "id,name,description,longitude,latitude,status"
 	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sites/$site_ids" \
@@ -93,7 +99,8 @@ function get_sites {
 			|sed 's/\"//g'
 }
 
-function get_site_by_type {
+get_site_by_type()
+{
 	# 1 = Motorway Incident Detection and Automatic Signalling (MIDAS) https://en.wikipedia.org/wiki/Motorway_Incident_Detection_and_Automatic_Signalling (mainly predominantly inductive loops (though there are a few sites where radar technology is being trialled))
 	# 2 = TAME (Traffic Appraisal, Modelling and Economics) which are inductive loops
 	# 3 = Traffic Monitoring Units (TMU) (loops)
@@ -116,7 +123,7 @@ function get_site_by_type {
 #get_quality 5688 01012018 04012018 daily
 #get_quality 5688,5699 01012018 04012018 overall
 #get_report 5688 Daily 01012015 01012018
-get_report 5688 daily 01012018 05012018
+#get_report 5688 daily 01012018 05012018
 #get_sites
 #get_sites 5688
 #get_sites 5688,5689
