@@ -545,19 +545,15 @@ EOF
 EOF
   }
 
-  expected=$(cat << EOF
-id,description
-1,MIDAS
-2,TAME
-3,TMU
-4,Legacy
-EOF
-)
-
   run get_site_by_type
 
   echo "result = $output"
 
   [ "$status" -eq 0 ]
-  [ "$output" = "$expected" ]
+  [ ${lines[0]} = "id,description" ]
+  [ ${lines[1]} = "1,MIDAS" ]
+  [ ${lines[2]} = "2,TAME" ]
+  [ ${lines[3]} = "3,TMU" ]
+  [ ${lines[4]} = "4,Legacy" ]
+  [ ${#lines[@]} == 5 ]
 }
