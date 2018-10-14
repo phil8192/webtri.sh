@@ -19,7 +19,7 @@ get_quality()
 	end=$3
 	breakdown=$4 # overall, daily
 
-	if [ $breakdown = "overall" ] ;then
+	if [ "$breakdown" = "overall" ] ;then
 		echo "quality"
 		# there is a bug in the api:
 		# curl -X GET --header 'Accept: application/json' 'http://webtris.highwaysengland.co.uk/api/v1.0/quality/overall?sites=5688%2C5801&start_date=01012018&end_date=03012018'
@@ -43,12 +43,12 @@ get_quality()
 		# (days-1)/days * result.
 		#
 		# note: have to round this up with printf since jq does not support ceil.
-		start_date=$(date -d $(echo $start |awk '{print substr($1,5,4) substr($1,3,2) substr($1,1,2)}') +%Y%m%d)
-		end_date=$(date -d $(echo $end |awk '{print substr($1,5,4) substr($1,3,2) substr($1,1,2)}') +%Y%m%d)
+		start_date=$(date -d "$(echo "$start" |awk '{print substr($1,5,4) substr($1,3,2) substr($1,1,2)}')" +%Y%m%d)
+		end_date=$(date -d "$(echo "$end" |awk '{print substr($1,5,4) substr($1,3,2) substr($1,1,2)}')" +%Y%m%d)
 		days=$((1 + end_date - start_date))
-		printf "%.f\n" $(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/overall?sites=$sites&start_date=$start&end_date=$end" \
-				|jq -r --arg days $days '.data_quality * (([$days |tonumber, 2] |max) -1) / ($days |tonumber)')
-	elif [ $breakdown = "daily" ] ;then
+		printf "%.f\\n" "$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/overall?sites=$sites&start_date=$start&end_date=$end" \
+				|jq -r --arg days $days '.data_quality * (([$days |tonumber, 2] |max) -1) / ($days |tonumber)')"
+	elif [ "$breakdown" = "daily" ] ;then
 		echo "date,quality"
 		curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/daily?siteId=$sites&start_date=$start&end_date=$end" \
 			|jq -r '.Qualities |.[] |map(.) |@csv' \
@@ -68,16 +68,16 @@ get_report()
 
 	href="${ENDPOINT}/reports/${interval}?sites=${site_id}&start_date=${start}&end_date=${end}&page=1&page_size=$MAX_ROWS"
 
-	echo -n "site_name,report_date,time_period_end,interval,"
-	echo -n "length_0_520_cm,length_521_660_cm,length_661_1160_cm,length_1160_plus_cm,"
-	echo -n "speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,"
-	echo -n "speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,"
-	echo -n "speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,"
-	echo "speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_volume"
+	printf "site_name,report_date,time_period_end,interval,"
+	printf "length_0_520_cm,length_521_660_cm,length_661_1160_cm,length_1160_plus_cm,"
+	printf "speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,"
+	printf "speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,"
+	printf "speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,"
+	printf "speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_volume\\n"
 
-	while [ $href ] ;do
+	while [ "$href" ] ;do
 		curl -s -X GET --header "Accept: application/json" "$href" >report.json
-		if [ $(jq -r 'type' report.json) != "object" ] ;then
+		if [ "$(jq -r 'type' report.json)" != "object" ] ;then
 			echo "=== error ===" >&2
 			cat report.json >&2
 			rm -f report.json
@@ -85,9 +85,8 @@ get_report()
 		fi
 		jq -r '.Rows |.[] |join(",")' report.json
 		href=$(jq -r '.Header.links |.[] |select(.rel == "nextPage") |.href' report.json)
-		rm -f report.json
-		exit 0
 	done
+	rm -f report.json
 }
 
 get_sites()
@@ -123,7 +122,7 @@ get_site_by_type()
 #get_quality 5688 01012018 04012018 daily
 #get_quality 5688,5699 01012018 04012018 overall
 #get_report 5688 Daily 01012015 01012018
-#get_report 5688 daily 01012018 05012018
+#get_report 5688 daily 01012018 01012018
 #get_sites
 #get_sites 5688
 #get_sites 5688,5689
