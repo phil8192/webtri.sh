@@ -1,7 +1,6 @@
 #!/usr/bin/env bats
 
-source "../webtri.sh"
-
+source "webtri.sh"
 
 @test "get_site_by_type" {
 
