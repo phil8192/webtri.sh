@@ -515,6 +515,23 @@ EOF
   [ ${#lines[@]} == 3 ]
 }
 
+@test "get_site_by_type 31337" {
+
+  curl()
+  {
+    echo ""
+  }
+
+  run get_site_by_type 31337
+
+  echo "result = $output"
+
+  # error dropped gracefully.
+  [ "$status" -eq 0 ]
+  [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
+  [ ${#lines[@]} == 1 ]
+}
+
 @test "get_site_by_type" {
 
   # intercept curl call, return mock.
