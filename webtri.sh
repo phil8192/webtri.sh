@@ -6,7 +6,7 @@ MAX_ROWS=40000
 
 function get_area {
 	id=$1 # note: api supposed to accept comma separated list of ids. however only works for 1 id.
-	echo "Id,Name,Description,XLongitude,XLatitude,YLongitude,YLatitude"
+	echo "id,name,description,x_lon,x_lat,y_lon,y_lat"
 	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/areas/$id" \
 			|jq -r '.areas? |.[] // [] |join(",")'
 }
@@ -18,7 +18,7 @@ function get_quality {
 	breakdown=$4 # overall, daily
 
 	if [ $breakdown == "overall" ] ;then
-		echo "Quality"
+		echo "quality"
 		# there is a bug in the api:
 		# curl -X GET --header 'Accept: application/json' 'http://webtris.highwaysengland.co.uk/api/v1.0/quality/overall?sites=5688%2C5801&start_date=01012018&end_date=03012018'
 		# will return 133.
@@ -47,7 +47,7 @@ function get_quality {
 		printf "%.f\n" $(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/overall?sites=$sites&start_date=$start&end_date=$end" \
 				|jq -r --arg days $days '.data_quality * (([$days |tonumber, 2] |max) -1) / ($days |tonumber)')
 	elif [ $breakdown == "daily" ] ;then
-		echo "Date,Quality"
+		echo "date,quality"
 		curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/daily?siteId=$sites&start_date=$start&end_date=$end" \
 			|jq -r '.Qualities |.[] |map(.) |@csv' \
 			|sed 's/\"//g'
@@ -65,12 +65,12 @@ function get_report {
 
 	href="${ENDPOINT}/reports/${interval}?sites=${site_id}&start_date=${start}&end_date=${end}&page=1&page_size=$MAX_ROWS"
 
-	echo -n "Site Name,Report Date,Time Period Ending,Time Interval,"
-	echo -n "0 - 520 cm,521 - 660 cm,661 - 1160 cm,1160+ cm,"
-	echo -n "0 - 10 mph,11 - 15 mph,16 - 20 mph,21 - 25 mph,"
-	echo -n "26 - 30 mph,31 - 35 mph,36 - 40 mph,41 - 45 mph,"
-	echo -n "46 - 50 mph,51 - 55 mph,56 - 60 mph,61 - 70 mph,"
-	echo "71 - 80 mph,80+ mph,Avg mph,Total Volume"
+	echo -n "site_name,report_date,time_period_end,interval,"
+	echo -n "length_0_520_cm,length_521_660_cm,length_661_1160_cm,length_1160_plus_cm,"
+	echo -n "speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,"
+	echo -n "speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,"
+	echo -n "speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,"
+	echo "speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_volume"
 
 	while [ $href ] ;do
 		curl -s -X GET --header "Accept: application/json" "$href" >report.json
@@ -87,7 +87,7 @@ function get_report {
 
 function get_sites {
 	site_ids=$1
-	echo "Id,Name,Description,Longitude,Latitude,Status"
+	echo "id,name,description,longitude,latitude,status"
 	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sites/$site_ids" \
 			|jq -r '.sites | .[] | map(.) |@csv' \
 			|sed 's/\"//g'
@@ -100,11 +100,11 @@ function get_site_by_type {
 	# 4 = Highways Agency’s Traffic Flow Database System (TRADS) (Traffic Accident Database System (TRADS)?) (legacy)
 	site_type=$1
 	if [ -z "$site_type" ] ;then
-		echo "Id,Description"
+		echo "id,description"
 		curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes" \
 				|jq -r '.sitetypes | .[] |join(",")'
 	else
-		echo "Id,Name,Description,Longitude,Latitude,Status"
+		echo "id,name,description,longitude,latitude,status"
 		curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes/$site_type/sites" \
 				|jq -r '.sites | .[] | map(.) |@csv' \
 				|sed 's/\"//g'
@@ -116,7 +116,7 @@ function get_site_by_type {
 #get_quality 5688 01012018 04012018 daily
 #get_quality 5688,5699 01012018 04012018 overall
 #get_report 5688 Daily 01012015 01012018
-#get_report 5688 daily 01012018 05012018
+get_report 5688 daily 01012018 05012018
 #get_sites
 #get_sites 5688
 #get_sites 5688,5689
