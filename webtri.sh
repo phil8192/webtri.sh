@@ -121,7 +121,7 @@ get_site_by_type()
 #get_area
 #get_quality 5688 01012018 04012018 daily
 #get_quality 5688,5699 01012018 04012018 overall
-#get_report 5688 Daily 01012015 01012018
+#get_report 5688 daily 01012015 01012018
 #get_report 5688 daily 01012018 01012018
 #get_sites
 #get_sites 5688

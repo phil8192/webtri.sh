@@ -133,7 +133,7 @@ EOF
   }
 
   run get_quality 5688,5699 01012018 04012018 overall
-  
+
   echo "result = $output"
 
   [ "$status" -eq 0 ]
@@ -146,6 +146,136 @@ EOF
 
 @test "get_report 5688 Daily 01012015 01012018" {
 
+  curl()
+  {
+    # just 2 rows here.
+    cat << EOF
+    {
+      "Header": {
+        "row_count": 2,
+        "start_date": "01012015",
+        "end_date": "01012018",
+        "links": [
+          {
+            "href": "http://webtris.highwaysengland.co.uk/api/v1.0/reports/Daily?sites=5688&start_date=01012015&end_date=01012018&page=2&page_size=40000",
+            "rel": "nextPage"
+          }
+        ]
+      },
+      "Rows": [
+        {
+          "Site Name": "M602/6051A",
+          "Report Date": "2015-01-01T00:00:00",
+          "Time Period Ending": "00:59:00",
+          "Time Interval": "",
+          "0 - 520 cm": "",
+          "521 - 660 cm": "",
+          "661 - 1160 cm": "",
+          "1160+ cm": "",
+          "0 - 10 mph": "",
+          "11 - 15 mph": "",
+          "16 - 20 mph": "",
+          "21 - 25 mph": "",
+          "26 - 30 mph": "",
+          "31 - 35 mph": "",
+          "36 - 40 mph": "",
+          "41 - 45 mph": "",
+          "46 - 50 mph": "",
+          "51 - 55 mph": "",
+          "56 - 60 mph": "",
+          "61 - 70 mph": "",
+          "71 - 80 mph": "",
+          "80+ mph": "",
+          "Avg mph": "",
+          "Total Volume": "332"
+        },
+        {
+          "Site Name": "M602/6051A",
+          "Report Date": "2015-01-01T00:00:00",
+          "Time Period Ending": "01:59:00",
+          "Time Interval": "",
+          "0 - 520 cm": "",
+          "521 - 660 cm": "",
+          "661 - 1160 cm": "",
+          "1160+ cm": "",
+          "0 - 10 mph": "",
+          "11 - 15 mph": "",
+          "16 - 20 mph": "",
+          "21 - 25 mph": "",
+          "26 - 30 mph": "",
+          "31 - 35 mph": "",
+          "36 - 40 mph": "",
+          "41 - 45 mph": "",
+          "46 - 50 mph": "",
+          "51 - 55 mph": "",
+          "56 - 60 mph": "",
+          "61 - 70 mph": "",
+          "71 - 80 mph": "",
+          "80+ mph": "",
+          "Avg mph": "",
+          "Total Volume": "396"
+        }
+      ]
+    }
+EOF
+    # next curl call from nextPage ^
+    curl()
+    {
+      cat << EOF
+      {
+        "Header": {
+          "row_count": 1,
+          "start_date": "01012015",
+          "end_date": "01012018",
+          "links": [
+            {
+              "href": "http://webtris.highwaysengland.co.uk/api/v1.0/reports/Daily?sites=5688&start_date=01012015&end_date=01012018&page=2&page_size=40000",
+              "rel": "prevPage"
+            }
+          ]
+        },
+        "Rows": [
+          {
+            "Site Name": "M602/6051A",
+            "Report Date": "2015-01-01T00:00:00",
+            "Time Period Ending": "00:59:00",
+            "Time Interval": "",
+            "0 - 520 cm": "",
+            "521 - 660 cm": "",
+            "661 - 1160 cm": "",
+            "1160+ cm": "",
+            "0 - 10 mph": "",
+            "11 - 15 mph": "",
+            "16 - 20 mph": "",
+            "21 - 25 mph": "",
+            "26 - 30 mph": "",
+            "31 - 35 mph": "",
+            "36 - 40 mph": "5",
+            "41 - 45 mph": "",
+            "46 - 50 mph": "",
+            "51 - 55 mph": "",
+            "56 - 60 mph": "",
+            "61 - 70 mph": "",
+            "71 - 80 mph": "",
+            "80+ mph": "",
+            "Avg mph": "",
+            "Total Volume": "100"
+          }
+        ]
+      }
+EOF
+    }
+  }
+
+  run get_report 5688 Daily 01012015 01012018
+
+  echo "result = $output"
+
+  [ "$status" -eq 0 ]
+  [ ${lines[0]} = "site_name,report_date,time_period_end,interval,length_0_520_cm,length_521_660_cm,length_661_1160_cm,length_1160_plus_cm,speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_volume" ]
+  [ ${lines[1]} = "M602/6051A,2015-01-01T00:00:00,00:59:00,,,,,,,,,,,,,,,,,,,,,332" ]
+  [ ${lines[2]} = "M602/6051A,2015-01-01T00:00:00,01:59:00,,,,,,,,,,,,,,,,,,,,,396" ]
+  [ ${lines[3]} = "M602/6051A,2015-01-01T00:00:00,00:59:00,,,,,,,,,,,,5,,,,,,,,,100" ]
 }
 
 @test "get_report 5688 daily 01012018 01012018" {
