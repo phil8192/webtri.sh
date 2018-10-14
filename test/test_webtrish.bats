@@ -119,6 +119,29 @@ EOF
 
 @test "get_quality 5688,5699 01012018 04012018 overall" {
 
+  curl()
+  {
+    cat << EOF
+    {
+      "row_count": 1,
+      "start_date": "01012018",
+      "end_date": "04012018",
+      "data_quality": 67,
+      "sites": "5688,5699"
+    }
+EOF
+  }
+
+  run get_quality 5688,5699 01012018 04012018 overall
+  
+  echo "result = $output"
+
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "quality" ]
+
+  # note that remote will actually return 67 due to bug.
+  # client corrects for this.
+  [ "${lines[1]}" = "50" ]
 }
 
 @test "get_report 5688 Daily 01012015 01012018" {
