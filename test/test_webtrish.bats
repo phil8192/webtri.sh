@@ -2,6 +2,47 @@
 
 source "webtri.sh"
 
+
+@test "get_area 1" {
+
+}
+
+@test "get_area" {
+
+}
+
+@test "get_quality 5688 01012018 04012018 daily" {
+
+}
+
+@test "get_quality 5688,5699 01012018 04012018 overall" {
+
+}
+
+@test "get_report 5688 Daily 01012015 01012018" {
+
+}
+
+@test "get_report 5688 daily 01012018 01012018" {
+
+}
+
+@test "get_sites" {
+
+}
+
+@test "get_sites 5688" {
+
+}
+
+@test "get_sites 5688,5689" {
+
+}
+
+@test "get_site_by_type 1" {
+
+}
+
 @test "get_site_by_type" {
 
   # intercept curl call, return mock.
