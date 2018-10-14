@@ -405,6 +405,33 @@ EOF
 
 @test "get_sites 5688" {
 
+  curl()
+  {
+    cat << EOF
+    {
+      "row_count": 1,
+      "sites": [
+        {
+          "Id": "5688",
+          "Name": "MIDAS site at M602/6051A priority 1 on link 115042101; GPS Ref: 379545;398603; Eastbound",
+          "Description": "M602/6051A",
+          "Longitude": -2.30971169539053,
+          "Latitude": 53.4837600708868,
+          "Status": "Active"
+        }
+      ]
+    }
+EOF
+  }
+
+  run get_sites 5688
+
+  echo "result = $output"
+
+  [ "$status" -eq 0 ]
+  [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
+  [ ${lines[1]} = "5688,MIDAS site at M602/6051A priority 1 on link 115042101; GPS Ref: 379545;398603; Eastbound,M602/6051A,-2.30971169539053,53.4837600708868,Active" ]
+  [ ${#lines[@]} == 2 ]
 }
 
 @test "get_sites 5688,5689" {
