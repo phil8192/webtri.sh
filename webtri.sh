@@ -89,10 +89,21 @@ function get_sites {
 			|jq -r '.sites | .[] | map(.) |@csv'
 }
 
-function get_site_types {
-	echo '"Id","Description"'
-	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes" \
-			|jq -r '.sitetypes | .[] |join(",")'
+function get_site_by_type {
+	# 1 = Motorway Incident Detection and Automatic Signalling (MIDAS) https://en.wikipedia.org/wiki/Motorway_Incident_Detection_and_Automatic_Signalling (mainly predominantly inductive loops (though there are a few sites where radar technology is being trialled))
+	# 2 = TAME (Traffic Appraisal, Modelling and Economics) which are inductive loops
+	# 3 = Traffic Monitoring Units (TMU) (loops)
+	# 4 = Highways Agency’s Traffic Flow Database System (TRADS) (Traffic Accident Database System (TRADS)?) (legacy)
+	site_type=$1
+	if [ -z "$site_type" ] ;then
+		echo '"Id","Description"'
+		curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes" \
+				|jq -r '.sitetypes | .[] |join(",")'
+	else
+		echo '"Id","Name","Description","Longitude","Latitude","Status"'
+		curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes/$site_type/sites" \
+				|jq -r '.sites | .[] | map(.) |@csv'
+	fi
 }
 
 #get_report 5688 Daily 01012015 01012018
@@ -104,4 +115,5 @@ function get_site_types {
 #get_sites
 #get_sites 5688
 #get_sites 5688,5689
-get_site_types
+#get_site_by_type
+get_site_by_type 1
