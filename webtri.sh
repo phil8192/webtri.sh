@@ -4,12 +4,22 @@ ENDPOINT="http://webtris.highwaysengland.co.uk/api/v1.0"
 MAX_ROWS=40000
 
 
+_to_date()
+{
+	date -d "$(echo "$1" \
+		|awk '{print substr($1,5,4) substr($1,3,2) substr($1,1,2)}')" +%Y%m%d
+}
+
 get_area()
 {
 	id=$1 # note: api supposed to accept comma separated list of ids. however only works for 1 id.
-	echo "id,name,description,x_lon,x_lat,y_lon,y_lat"
-	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/areas/$id" \
-			| ([ "$JQ" = true ] && jq -r '.areas? |.[] // [] |join(",")' || cat)
+	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/areas/$id")
+	if [ "$JQ" = true ] ;then
+		echo "id,name,description,x_lon,x_lat,y_lon,y_lat"
+		echo "$raw" |jq -r '.areas? |.[] // [] |join(",")'
+	else
+		echo "$raw"
+	fi
 }
 
 get_quality()
@@ -20,39 +30,32 @@ get_quality()
 	breakdown=$4 # overall, daily
 
 	if [ "$breakdown" = "overall" ] ;then
-		echo "quality"
-		# there is a bug in the api:
-		# curl -X GET --header 'Accept: application/json' 'http://webtris.highwaysengland.co.uk/api/v1.0/quality/overall?sites=5688%2C5801&start_date=01012018&end_date=03012018'
-		# will return 133.
-		# it should between [0, 100] according to their FAQ:
-		# Data Quality Calculation
-		# The calculation for the Data Quality is as follows:
-		# (Sum the total number of minutes’ worth of data) / (Total number of days in the selected date range * 1440) * 100 to give a percentage. This calculation is the same for all reports.
-		#
-		# so for these 4 days of complete data, we have 4 days * (4 15 min intervals) * 24 hours of complete data.
-		# to get the % they probably divide by max possible complete data, however
-		# they incorrectly calculate days as: end_date - start_date, which is exclusive.
-		# they should instead do somthing like: 1 + end_date - start_date.
-		#
-		# rows_data / (days
-		# (4*4*24) / (3*4*24) = 1.333.. wrong.
-		# fix:
-		# 4/3 * 3/4 = 1.
-		#
-		# correct by:
-		# (days-1)/days * result.
-		#
-		# note: have to round this up with printf since jq does not support ceil.
-		start_date=$(date -d "$(echo "$start" |awk '{print substr($1,5,4) substr($1,3,2) substr($1,1,2)}')" +%Y%m%d)
-		end_date=$(date -d "$(echo "$end" |awk '{print substr($1,5,4) substr($1,3,2) substr($1,1,2)}')" +%Y%m%d)
-		days=$((1 + end_date - start_date))
-		printf "%.f\\n" "$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/overall?sites=$sites&start_date=$start&end_date=$end" \
-				|jq -r --arg days $days '.data_quality * (([$days |tonumber, 2] |max) -1) / ($days |tonumber)')"
+		raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/overall?sites=$sites&start_date=$start&end_date=$end")
+
+		if [ "$JQ" = true ] ;then
+			start_date=$(_to_date "$start")
+			end_date=$(_to_date "$end")
+			days=$((1 + end_date - start_date))
+			echo "quality"
+			# note: have to round this up with printf since jq does not support ceil.
+			printf "%.f\\n" "$(echo "$raw" \
+					|jq -r --arg days $days '.data_quality * (([$days |tonumber, 2] |max) -1) / ($days |tonumber)')"
+		else
+			# note, does not correct for remote bug.
+			echo "$raw"
+		fi
+
 	elif [ "$breakdown" = "daily" ] ;then
-		echo "date,quality"
-		curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/daily?siteId=$sites&start_date=$start&end_date=$end" \
-			|jq -r '.Qualities |.[] |map(.) |@csv' \
-			|sed 's/\"//g'
+		raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/daily?siteId=$sites&start_date=$start&end_date=$end")
+		if [ "$JQ" = true ] ;then
+			echo "date,quality"
+			echo "$raw" \
+					|jq -r '.Qualities |.[] |map(.) |@csv' \
+					|sed 's/\"//g'
+		else
+			echo "$raw"
+		fi
+
 	else
 		echo "=== error ===" >&2
 		echo "expected 'overall' or 'daily'" >&2
@@ -117,10 +120,10 @@ get_site_by_type()
 	fi
 }
 
-JQ=true
-get_area 1
+JQ=false
+#get_area 1
 #get_area
-#get_quality 5688 01012018 04012018 daily
+get_quality 5688 01012018 04012018 daily
 #get_quality 5688,5699 01012018 04012018 overall
 #get_report 5688 daily 01012015 01012018
 #get_report 5688 daily 01012018 01012018
