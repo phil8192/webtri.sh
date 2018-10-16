@@ -9,7 +9,7 @@ get_area()
 	id=$1 # note: api supposed to accept comma separated list of ids. however only works for 1 id.
 	echo "id,name,description,x_lon,x_lat,y_lon,y_lat"
 	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/areas/$id" \
-			|jq -r '.areas? |.[] // [] |join(",")'
+			| ([ "$JQ" = true ] && jq -r '.areas? |.[] // [] |join(",")' || cat)
 }
 
 get_quality()
@@ -117,7 +117,8 @@ get_site_by_type()
 	fi
 }
 
-#get_area 1
+JQ=true
+get_area 1
 #get_area
 #get_quality 5688 01012018 04012018 daily
 #get_quality 5688,5699 01012018 04012018 overall
