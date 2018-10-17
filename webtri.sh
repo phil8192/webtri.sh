@@ -71,34 +71,55 @@ get_report()
 
 	href="${ENDPOINT}/reports/${interval}?sites=${site_id}&start_date=${start}&end_date=${end}&page=1&page_size=$MAX_ROWS"
 
-	printf "site_name,report_date,time_period_end,interval,"
-	printf "length_0_520_cm,length_521_660_cm,length_661_1160_cm,length_1160_plus_cm,"
-	printf "speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,"
-	printf "speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,"
-	printf "speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,"
-	printf "speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_volume\\n"
+	if [ "$JQ" = true ] ;then
+		printf "site_name,report_date,time_period_end,interval,"
+		printf "length_0_520_cm,length_521_660_cm,length_661_1160_cm,length_1160_plus_cm,"
+		printf "speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,"
+		printf "speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,"
+		printf "speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,"
+		printf "speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_volume\\n"
 
-	while [ "$href" ] ;do
-		curl -s -X GET --header "Accept: application/json" "$href" >report.json
-		if [ "$(jq -r 'type' report.json)" != "object" ] ;then
-			echo "=== error ===" >&2
-			cat report.json >&2
-			rm -f report.json
-			exit 1
-		fi
-		jq -r '.Rows |.[] |join(",")' report.json
-		href=$(jq -r '.Header.links |.[] |select(.rel == "nextPage") |.href' report.json)
-	done
-	rm -f report.json
+		while [ "$href" ] ;do
+			raw=$(curl -s -X GET --header "Accept: application/json" "$href")
+			if [ "$(echo "$raw" |jq -r 'type')" != "object" ] ;then
+				echo "=== error ===" >&2
+				echo "$raw" >&2
+				exit 1
+			fi
+			echo "$raw" |jq -r '.Rows |.[] |join(",")'
+			href=$(echo "$raw" |jq -r '.Header.links |.[] |select(.rel == "nextPage") |.href')
+		done
+	else
+		echo "["
+		while [ "$href" ] ;do
+			raw=$(curl -s -X GET --header "Accept: application/json" "$href")
+			if [ "$(echo "$raw" |jq -r 'type')" != "object" ] ;then
+				echo "=== error ===" >&2
+				echo "$raw" >&2
+				exit 1
+			fi
+			echo "$raw"
+			href=$(echo "$raw" |jq -r '.Header.links |.[] |select(.rel == "nextPage") |.href')
+			if [ "$href" ] ;then
+				echo ","
+			fi
+		done
+		echo "]"
+	fi
 }
 
 get_sites()
 {
 	site_ids=$1
-	echo "id,name,description,longitude,latitude,status"
-	curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sites/$site_ids" \
-			|jq -r '.sites | .[] | map(.) |@csv' \
-			|sed 's/\"//g'
+	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sites/$site_ids")
+	if [ "$JQ" = true ] ;then
+		echo "id,name,description,longitude,latitude,status"
+		echo "$raw" \
+				|jq -r '.sites | .[] | map(.) |@csv' \
+				|sed 's/\"//g'
+	else
+		echo $raw
+	fi
 }
 
 get_site_by_type()
@@ -109,21 +130,30 @@ get_site_by_type()
 	# 4 = Highways Agency’s Traffic Flow Database System (TRADS) (Traffic Accident Database System (TRADS)?) (legacy)
 	site_type=$1
 	if [ -z "$site_type" ] ;then
-		echo "id,description"
-		curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes" \
-				|jq -r '.sitetypes | .[] |join(",")'
+		raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes")
+		if [ "$JQ" = true ] ;then
+			echo "id,description"
+			echo "$raw" |jq -r '.sitetypes | .[] |join(",")'
+		else
+			echo "$raw"
+		fi
 	else
-		echo "id,name,description,longitude,latitude,status"
-		curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes/$site_type/sites" \
-				|jq -r '.sites | .[] | map(.) |@csv' \
-				|sed 's/\"//g'
+		raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes/$site_type/sites")
+		if [ "$JQ" = true ] ;then
+			echo "id,name,description,longitude,latitude,status"
+			echo "$raw" \
+					|jq -r '.sites | .[] | map(.) |@csv' \
+					|sed 's/\"//g'
+		else
+			echo "$raw"
+		fi
 	fi
 }
 
-JQ=false
+JQ=true
 #get_area 1
 #get_area
-get_quality 5688 01012018 04012018 daily
+#get_quality 5688 01012018 04012018 daily
 #get_quality 5688,5699 01012018 04012018 overall
 #get_report 5688 daily 01012015 01012018
 #get_report 5688 daily 01012018 01012018
