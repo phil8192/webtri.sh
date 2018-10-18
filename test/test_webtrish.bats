@@ -534,7 +534,7 @@ EOF
   [ ${#lines[@]} == 1 ]
 }
 
-@test "get_site_by_type" {
+@test "get_site_types" {
 
   # intercept curl call, return mock.
   curl()
@@ -564,7 +564,7 @@ EOF
 EOF
   }
 
-  run get_site_by_type
+  run get_site_types
 
   echo "result = $output"
 

@@ -13,20 +13,6 @@ _seconds_since_epoch() {
 	fi
 }
 
-get_area() {
-	# note: api supposed to accept comma separated list of ids.
-	# however only works for 1 id.
-	id=$1
-	raw=$(curl -s -X GET --header 'Accept: application/json' \
-			"$ENDPOINT/areas/$id")
-	if [ "$JQ" = true ] ;then
-		echo "id,name,description,x_lon,x_lat,y_lon,y_lat"
-		echo "$raw" |jq -r '.areas? |.[] // [] |join(",")'
-	else
-		echo "$raw"
-	fi
-}
-
 _get_overall_quality() {
 	sites=$1
 	start=$2
@@ -61,6 +47,34 @@ _get_daily_quality() {
 		echo "$raw" \
 				|jq -r '.Qualities |.[] |map(.) |@csv' \
 				|sed 's/\"//g'
+	else
+		echo "$raw"
+	fi
+}
+
+# Public: Execute commands in debug mode.
+#
+# Takes a single argument and evaluates it only when the test script is started
+# with --debug. This is primarily meant for use during the development of test
+# scripts.
+#
+# $1 - Commands to be executed.
+#
+# Examples
+#
+#   test_debug "cat some_log_file"
+#
+# Returns the exit code of the last command executed in debug mode or 0
+#   otherwise.
+get_area() {
+	# note: api supposed to accept comma separated list of ids.
+	# however only works for 1 id.
+	id=$1
+	raw=$(curl -s -X GET --header 'Accept: application/json' \
+			"$ENDPOINT/areas/$id")
+	if [ "$JQ" = true ] ;then
+		echo "id,name,description,x_lon,x_lat,y_lon,y_lat"
+		echo "$raw" |jq -r '.areas? |.[] // [] |join(",")'
 	else
 		echo "$raw"
 	fi
@@ -126,10 +140,10 @@ get_report() {
 	fi
 }
 
-get_sites()
-{
+get_sites() {
 	site_ids=$1
-	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sites/$site_ids")
+	raw=$(curl -s -X GET --header 'Accept: application/json' \
+			"$ENDPOINT/sites/$site_ids")
 	if [ "$JQ" = true ] ;then
 		echo "id,name,description,longitude,latitude,status"
 		echo "$raw" \
@@ -140,31 +154,30 @@ get_sites()
 	fi
 }
 
-get_site_by_type()
-{
+get_site_types() {
+	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes")
+	if [ "$JQ" = true ] ;then
+		echo "id,description"
+		echo "$raw" |jq -r '.sitetypes | .[] |join(",")'
+	else
+		echo "$raw"
+	fi
+}
+
+get_site_by_type() {
 	# 1 = Motorway Incident Detection and Automatic Signalling (MIDAS) https://en.wikipedia.org/wiki/Motorway_Incident_Detection_and_Automatic_Signalling (mainly predominantly inductive loops (though there are a few sites where radar technology is being trialled))
 	# 2 = TAME (Traffic Appraisal, Modelling and Economics) which are inductive loops
 	# 3 = Traffic Monitoring Units (TMU) (loops)
 	# 4 = Highways Agency’s Traffic Flow Database System (TRADS) (Traffic Accident Database System (TRADS)?) (legacy)
 	site_type=$1
-	if [ -z "$site_type" ] ;then
-		raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes")
-		if [ "$JQ" = true ] ;then
-			echo "id,description"
-			echo "$raw" |jq -r '.sitetypes | .[] |join(",")'
-		else
-			echo "$raw"
-		fi
+	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes/$site_type/sites")
+	if [ "$JQ" = true ] ;then
+		echo "id,name,description,longitude,latitude,status"
+		echo "$raw" \
+				|jq -r '.sites | .[] | map(.) |@csv' \
+				|sed 's/\"//g'
 	else
-		raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes/$site_type/sites")
-		if [ "$JQ" = true ] ;then
-			echo "id,name,description,longitude,latitude,status"
-			echo "$raw" \
-					|jq -r '.sites | .[] | map(.) |@csv' \
-					|sed 's/\"//g'
-		else
-			echo "$raw"
-		fi
+		echo "$raw"
 	fi
 }
 
