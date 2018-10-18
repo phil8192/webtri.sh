@@ -7,8 +7,8 @@ MAX_ROWS=40000
 _seconds_since_epoch()
 {
 	if [ "$(uname)" = "Linux"  ] ;then
-		date -u -d $(echo "$1" \
-				|awk '{print substr($1,5,4) substr($1,3,2) substr($1,1,2)}') +%s
+		date -u -d "$(echo "$1" \
+				|awk '{print substr($1,5,4) substr($1,3,2) substr($1,1,2)}')" +%s
 	else
 		date -u -j -f "%d%m%Y:%H:%M:%S" "$1:00:00:00" +%s
 	fi
@@ -26,6 +26,45 @@ get_area()
 	fi
 }
 
+_get_overall_quality()
+{
+	sites=$1
+	start=$2
+	end=$3
+
+	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/overall?sites=$sites&start_date=$start&end_date=$end")
+
+	if [ "$JQ" = true ] ;then
+		start_secs=$(_seconds_since_epoch "$start")
+		end_secs=$(_seconds_since_epoch "$end")
+		days=$((1 + ((end_secs - start_secs) / 86400)))
+		echo "quality"
+		# note: have to round this up with printf since jq does not support ceil.
+		printf "%.f\\n" "$(echo "$raw" \
+				|jq -r --arg days $days '.data_quality * (([$days |tonumber, 2] |max) -1) / ($days |tonumber)')"
+	else
+		# note, does not correct for remote bug.
+		echo "$raw"
+	fi
+}
+
+_get_daily_quality()
+{
+	sites=$1
+	start=$2
+	end=$3
+	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/daily?siteId=$sites&start_date=$start&end_date=$end")
+	if [ "$JQ" = true ] ;then
+		echo "date,quality"
+		echo "$raw" \
+				|jq -r '.Qualities |.[] |map(.) |@csv' \
+				|sed 's/\"//g'
+	else
+		echo "$raw"
+	fi
+}
+
+
 get_quality()
 {
 	sites=$1 # only 1 site for daily
@@ -34,32 +73,9 @@ get_quality()
 	breakdown=$4 # overall, daily
 
 	if [ "$breakdown" = "overall" ] ;then
-		raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/overall?sites=$sites&start_date=$start&end_date=$end")
-
-		if [ "$JQ" = true ] ;then
-			start_secs=$(_seconds_since_epoch "$start")
-			end_secs=$(_seconds_since_epoch "$end")
-			days=$((1 + ((end_secs - start_secs) / 86400)))
-			echo "quality"
-			# note: have to round this up with printf since jq does not support ceil.
-			printf "%.f\\n" "$(echo "$raw" \
-					|jq -r --arg days $days '.data_quality * (([$days |tonumber, 2] |max) -1) / ($days |tonumber)')"
-		else
-			# note, does not correct for remote bug.
-			echo "$raw"
-		fi
-
+		_get_overall_quality "$sites" "$start" "$end"
 	elif [ "$breakdown" = "daily" ] ;then
-		raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/daily?siteId=$sites&start_date=$start&end_date=$end")
-		if [ "$JQ" = true ] ;then
-			echo "date,quality"
-			echo "$raw" \
-					|jq -r '.Qualities |.[] |map(.) |@csv' \
-					|sed 's/\"//g'
-		else
-			echo "$raw"
-		fi
-
+		_get_daily_quality "$sites" "$start" "$end"
 	else
 		echo "=== error ===" >&2
 		echo "expected 'overall' or 'daily'" >&2
@@ -122,7 +138,7 @@ get_sites()
 				|jq -r '.sites | .[] | map(.) |@csv' \
 				|sed 's/\"//g'
 	else
-		echo $raw
+		echo "$raw"
 	fi
 }
 
