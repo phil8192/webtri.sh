@@ -3,14 +3,13 @@
 
 Public: Get an area bounding box.
 
-The trunk roads are divided up into various pre-defined areas. Given an (optional) area id, this function will return the coordinates of a bounding box(es). The function will return all areas if an area id argument has not been supplied.
-
 * $1 - An optional area id.
+
+The trunk roads are divided up into various pre-defined areas. Given an (optional) area id, this function will return the coordinates of a bounding box(es). The function will return all areas if an area id argument has not been supplied.
 
 Examples
 
     get_area 1
-
     get_area
 
 Returns
@@ -29,20 +28,18 @@ Returns
 
 Public: Get overall or daily quality.
 
-If overall quality has been specified, gets the quality in terms of a percentage score. The percentage represents aggregated site data availability for the specified time period. If daily has been specified, Gets the day by day percentage quality for each site.
-
-Note that the orignal API contains a bug in which the overall quality is not calculated correctly. If CSV output has been specified (or jq is not present) This implementation will automatically correct for this bug.
-
 * $1 - Comma seperated list of site ids. Or single site id if daily.
 * $2 - ddmmyyyy start period.
 * $3 - ddmmyyyy end period.
 * $4 - overall or daily.
 
+If overall quality has been specified, gets the quality in terms of a percentage score. The percentage represents aggregated site data availability for the specified time period. If daily has been specified, Gets the day by day percentage quality for each site.
+
+Note that the orignal API contains a bug in which the overall quality is not calculated correctly. If CSV output has been specified (or jq is not present) This implementation will automatically correct for this bug.
+
 Examples
 
-get_quality 5688 01012018 04012018 daily
-
-get_quality 5688,5699 01012018 04012018 overall
+get_quality 5688 01012018 04012018 daily get_quality 5688,5699 01012018 04012018 overall
 
 Returns
 
@@ -55,18 +52,16 @@ Returns
 
 Public: Get site report.
 
-This is the main part of the API. A site report consists of a number of variables for each time period (minimum 15 minute interval) covering vehicle lengths, speeds and total counts.
-
 * $1 - Comma seperated list of site ids. Or single site id if daily.
 * $2 - ddmmyyyy start period.
 * $3 - ddmmyyyy end period.
 * $4 - overall or daily.
 
+This is the main part of the API. A site report consists of a number of variables for each time period (minimum 15 minute interval) covering vehicle lengths, speeds and total counts.
+
 Examples
 
-get_report 5688 daily 01012015 01012018
-
-get_report 5688 daily 01012018 01012018
+get_report 5688 daily 01012015 01012018 get_report 5688 daily 01012018 01012018
 
 Returns
 
@@ -101,17 +96,13 @@ Returns
 
 Public: Get sites.
 
-Get all avaiable site details and status.
-
 * $1 - Comma seperated list of site ids. (optional)
+
+Get all avaiable site details and status.
 
 Examples
 
-get_sites
-
-get_sites 5688
-
-get_sites 5688,5689
+get_sites get_sites 5688 get_sites 5688,5689
 
 Returns
 
@@ -145,19 +136,22 @@ Returns
 
 Public: Get sites by type.
 
+* $1 - Site type.
+
 Filter site information by site type. Use `get_site_types` function to see available options. The API currently returns:
 
 1. Motorway Incident Detection and Automatic Signalling (MIDAS)     Predominantly inductive loops (though there are a few sites where radar
      technology is being trialled)
- 2. TAME (Traffic Appraisal, Modelling and Economics) which are inductive loops 3. Traffic Monitoring Units (TMU) (loops) 4. Highways Agency’s Traffic Flow Database System (TRADS)     Traffic Accident Database System (TRADS)? (legacy)
 
-* $1 - Site type.
+2. TAME (Traffic Appraisal, Modelling and Economics) which are inductive loops
+
+3. Traffic Monitoring Units (TMU) (loops)
+
+4. Highways Agency’s Traffic Flow Database System (TRADS)     Traffic Accident Database System (TRADS)? (legacy)
 
 Examples
 
-get_site_by_type
-
-get_site_by_type 1
+get_site_by_type get_site_by_type 1
 
 Returns
 

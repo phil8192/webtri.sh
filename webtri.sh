@@ -1,28 +1,16 @@
 #!/bin/sh
-# Public: Various methods useful for performing mathematical operations.
-# All methods are module methods and should be called on the Math module.
-#
-# Examples
-#
-#   Math.square_root(9)
-#   # => 3
 
-# Internal: Integer number of seconds to wait before connection timeout.
 ENDPOINT="http://webtris.highwaysengland.co.uk/api/v1.0"
-
-# Internal: Integer number of seconds to wait before connection timeout.
 MAX_ROWS=40000
-
-# Internal: Integer number of seconds to wait before connection timeout.
 JQ=true
 
 
 # Internal: Get seconds since epoch for ddmmyyyy formated date.
 #
+# $1 - ddmmyyyy date
+#
 # Get seconds since epoch for the date (at midnight) in a portable way. This
 # function works on both Unix and Linux environments.
-#
-# $1 - ddmmyyyy date
 #
 # Examples
 #
@@ -40,12 +28,12 @@ _seconds_since_epoch() {
 
 # Internal: Get overall quality for specified sites.
 #
-# Gets the overall quality in terms of a percentage score. The percentage
-# represents aggregated site data availability for the specified time period.
-#
 # $1 - Comma seperated list of site ids.
 # $2 - ddmmyyyy start period.
 # $3 - ddmmyyyy end period.
+#
+# Gets the overall quality in terms of a percentage score. The percentage
+# represents aggregated site data availability for the specified time period.
 #
 # Examples
 #
@@ -78,11 +66,11 @@ _get_overall_quality() {
 
 # Internal: Get daily quality for specified site.
 #
-# Gets the daily quality in terms of a percentage score.
-#
 # $1 - Site id.
 # $2 - ddmmyyyy start period.
 # $3 - ddmmyyyy end period.
+#
+# Gets the daily quality in terms of a percentage score.
 #
 # Examples
 #
@@ -110,17 +98,16 @@ _get_daily_quality() {
 
 # Public: Get an area bounding box.
 #
+# $1 - An optional area id.
+#
 # The trunk roads are divided up into various pre-defined areas. Given an
 # (optional) area id, this function will return the coordinates of a bounding
 # box(es). The function will return all areas if an area id argument has not
 # been supplied.
 #
-# $1 - An optional area id.
-#
 # Examples
 #
 #   get_area 1
-#
 #   get_area
 #
 # Returns
@@ -146,6 +133,11 @@ get_area() {
 
 # Public: Get overall or daily quality.
 #
+# $1 - Comma seperated list of site ids. Or single site id if daily.
+# $2 - ddmmyyyy start period.
+# $3 - ddmmyyyy end period.
+# $4 - overall or daily.
+#
 # If overall quality has been specified, gets the quality in terms of a
 # percentage score. The percentage represents aggregated site data availability
 # for the specified time period. If daily has been specified, Gets the day by
@@ -155,15 +147,9 @@ get_area() {
 # calculated correctly. If CSV output has been specified (or jq is not present)
 # This implementation will automatically correct for this bug.
 #
-# $1 - Comma seperated list of site ids. Or single site id if daily.
-# $2 - ddmmyyyy start period.
-# $3 - ddmmyyyy end period.
-# $4 - overall or daily.
-#
 # Examples
 #
 # get_quality 5688 01012018 04012018 daily
-#
 # get_quality 5688,5699 01012018 04012018 overall
 #
 # Returns
@@ -188,19 +174,18 @@ get_quality() {
 
 # Public: Get site report.
 #
-# This is the main part of the API. A site report consists of a number of
-# variables for each time period (minimum 15 minute interval) covering vehicle
-# lengths, speeds and total counts.
-#
 # $1 - Comma seperated list of site ids. Or single site id if daily.
 # $2 - ddmmyyyy start period.
 # $3 - ddmmyyyy end period.
 # $4 - overall or daily.
 #
+# This is the main part of the API. A site report consists of a number of
+# variables for each time period (minimum 15 minute interval) covering vehicle
+# lengths, speeds and total counts.
+#
 # Examples
 #
 # get_report 5688 daily 01012015 01012018
-#
 # get_report 5688 daily 01012018 01012018
 #
 # Returns
@@ -275,16 +260,14 @@ get_report() {
 
 # Public: Get sites.
 #
-# Get all avaiable site details and status.
-#
 # $1 - Comma seperated list of site ids. (optional)
+#
+# Get all avaiable site details and status.
 #
 # Examples
 #
 # get_sites
-#
 # get_sites 5688
-#
 # get_sites 5688,5689
 #
 # Returns
@@ -333,23 +316,25 @@ get_site_types() {
 
 # Public: Get sites by type.
 #
+# $1 - Site type.
+#
 # Filter site information by site type. Use `get_site_types` function to see
 # available options. The API currently returns:
 #
 # 1. Motorway Incident Detection and Automatic Signalling (MIDAS)
 #    Predominantly inductive loops (though there are a few sites where radar
 #    technology is being trialled)
+#
 # 2. TAME (Traffic Appraisal, Modelling and Economics) which are inductive loops
+#
 # 3. Traffic Monitoring Units (TMU) (loops)
+#
 # 4. Highways Agency’s Traffic Flow Database System (TRADS)
 #    Traffic Accident Database System (TRADS)? (legacy)
-#
-# $1 - Site type.
 #
 # Examples
 #
 # get_site_by_type
-#
 # get_site_by_type 1
 #
 # Returns
@@ -361,10 +346,6 @@ get_site_types() {
 #   * latitude
 #   * status
 get_site_by_type() {
-	# 1 = Motorway Incident Detection and Automatic Signalling (MIDAS) https://en.wikipedia.org/wiki/Motorway_Incident_Detection_and_Automatic_Signalling (mainly predominantly inductive loops (though there are a few sites where radar technology is being trialled))
-	# 2 = TAME (Traffic Appraisal, Modelling and Economics) which are inductive loops
-	# 3 = Traffic Monitoring Units (TMU) (loops)
-	# 4 = Highways Agency’s Traffic Flow Database System (TRADS) (Traffic Accident Database System (TRADS)?) (legacy)
 	site_type=$1
 	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/sitetypes/$site_type/sites")
 	if [ "$JQ" = true ] ;then
