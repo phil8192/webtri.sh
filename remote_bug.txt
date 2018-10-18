@@ -1,0 +1,21 @@
+# there is a bug in the api:
+		# curl -X GET --header 'Accept: application/json' 'http://webtris.highwaysengland.co.uk/api/v1.0/quality/overall?sites=5688%2C5801&start_date=01012018&end_date=03012018'
+		# will return 133.
+		# it should between [0, 100] according to their FAQ:
+		# Data Quality Calculation
+		# The calculation for the Data Quality is as follows:
+		# (Sum the total number of minutes’ worth of data) / (Total number of days in the selected date range * 1440) * 100 to give a percentage. This calculation is the same for all reports.
+		#
+		# so for these 4 days of complete data, we have 4 days * (4 15 min intervals) * 24 hours of complete data.
+		# to get the % they probably divide by max possible complete data, however
+		# they incorrectly calculate days as: end_date - start_date, which is exclusive.
+		# they should instead do somthing like: 1 + end_date - start_date.
+		#
+		# rows_data / (days
+		# (4*4*24) / (3*4*24) = 1.333.. wrong.
+		# fix:
+		# 4/3 * 3/4 = 1.
+		#
+		# correct by:
+		# (days-1)/days * result.
+		#

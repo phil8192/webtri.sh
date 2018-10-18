@@ -4,8 +4,7 @@ ENDPOINT="http://webtris.highwaysengland.co.uk/api/v1.0"
 MAX_ROWS=40000
 
 
-_seconds_since_epoch()
-{
+_seconds_since_epoch() {
 	if [ "$(uname)" = "Linux"  ] ;then
 		date -u -d "$(echo "$1" \
 				|awk '{print substr($1,5,4) substr($1,3,2) substr($1,1,2)}')" +%s
@@ -14,10 +13,12 @@ _seconds_since_epoch()
 	fi
 }
 
-get_area()
-{
-	id=$1 # note: api supposed to accept comma separated list of ids. however only works for 1 id.
-	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/areas/$id")
+get_area() {
+	# note: api supposed to accept comma separated list of ids.
+	# however only works for 1 id.
+	id=$1
+	raw=$(curl -s -X GET --header 'Accept: application/json' \
+			"$ENDPOINT/areas/$id")
 	if [ "$JQ" = true ] ;then
 		echo "id,name,description,x_lon,x_lat,y_lon,y_lat"
 		echo "$raw" |jq -r '.areas? |.[] // [] |join(",")'
@@ -26,13 +27,13 @@ get_area()
 	fi
 }
 
-_get_overall_quality()
-{
+_get_overall_quality() {
 	sites=$1
 	start=$2
 	end=$3
 
-	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/overall?sites=$sites&start_date=$start&end_date=$end")
+	raw=$(curl -s -X GET --header 'Accept: application/json' \
+			"$ENDPOINT/quality/overall?sites=$sites&start_date=$start&end_date=$end")
 
 	if [ "$JQ" = true ] ;then
 		start_secs=$(_seconds_since_epoch "$start")
@@ -41,19 +42,20 @@ _get_overall_quality()
 		echo "quality"
 		# note: have to round this up with printf since jq does not support ceil.
 		printf "%.f\\n" "$(echo "$raw" \
-				|jq -r --arg days $days '.data_quality * (([$days |tonumber, 2] |max) -1) / ($days |tonumber)')"
+				|jq -r --arg days $days \
+				'.data_quality * (([$days |tonumber, 2] |max) -1) / ($days |tonumber)')"
 	else
 		# note, does not correct for remote bug.
 		echo "$raw"
 	fi
 }
 
-_get_daily_quality()
-{
+_get_daily_quality() {
 	sites=$1
 	start=$2
 	end=$3
-	raw=$(curl -s -X GET --header 'Accept: application/json' "$ENDPOINT/quality/daily?siteId=$sites&start_date=$start&end_date=$end")
+	raw=$(curl -s -X GET --header 'Accept: application/json' \
+			"$ENDPOINT/quality/daily?siteId=$sites&start_date=$start&end_date=$end")
 	if [ "$JQ" = true ] ;then
 		echo "date,quality"
 		echo "$raw" \
@@ -64,9 +66,7 @@ _get_daily_quality()
 	fi
 }
 
-
-get_quality()
-{
+get_quality() {
 	sites=$1 # only 1 site for daily
 	start=$2
 	end=$3
@@ -82,8 +82,7 @@ get_quality()
 	fi
 }
 
-get_report()
-{
+get_report() {
 	site_id=$1
 	interval=$2 # daily, monthly, annual
 	start=$3
@@ -93,37 +92,36 @@ get_report()
 
 	if [ "$JQ" = true ] ;then
 		printf "site_name,report_date,time_period_end,interval,"
-		printf "length_0_520_cm,length_521_660_cm,length_661_1160_cm,length_1160_plus_cm,"
+		printf "len_0_520_cm,len_521_660_cm,len_661_1160_cm,len_1160_plus_cm,"
 		printf "speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,"
 		printf "speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,"
 		printf "speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,"
-		printf "speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_volume\\n"
-
-		while [ "$href" ] ;do
-			raw=$(curl -s -X GET --header "Accept: application/json" "$href")
-			if [ "$(echo "$raw" |jq -r 'type')" != "object" ] ;then
-				echo "=== error ===" >&2
-				echo "$raw" >&2
-				exit 1
-			fi
-			echo "$raw" |jq -r '.Rows |.[] |join(",")'
-			href=$(echo "$raw" |jq -r '.Header.links |.[] |select(.rel == "nextPage") |.href')
-		done
+		printf "speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_vol\\n"
 	else
 		echo "["
-		while [ "$href" ] ;do
-			raw=$(curl -s -X GET --header "Accept: application/json" "$href")
-			if [ "$(echo "$raw" |jq -r 'type')" != "object" ] ;then
-				echo "=== error ===" >&2
-				echo "$raw" >&2
-				exit 1
-			fi
-			echo "$raw"
-			href=$(echo "$raw" |jq -r '.Header.links |.[] |select(.rel == "nextPage") |.href')
+	fi
+
+	while [ "$href" ] ;do
+		raw=$(curl -s -X GET --header "Accept: application/json" "$href")
+		if [ "$(echo "$raw" |jq -r 'type')" != "object" ] ;then
+			echo "=== error ===" >&2
+			echo "$raw" >&2
+			exit 1
+		fi
+		href=$(echo "$raw" \
+				|jq -r '.Header.links |.[] |select(.rel == "nextPage") |.href')
+		if [ "$JQ" = true ] ;then
+			echo "$raw" |jq -r '.Rows |.[] |join(",")'
+		else
 			if [ "$href" ] ;then
-				echo ","
+				echo "$raw,"
+			else
+				echo "$raw"
 			fi
-		done
+		fi
+	done
+
+	if [ "$JQ" = false ] ;then
 		echo "]"
 	fi
 }

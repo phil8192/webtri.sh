@@ -277,7 +277,7 @@ EOF
   echo "result = $output"
 
   [ "$status" -eq 0 ]
-  [ ${lines[0]} = "site_name,report_date,time_period_end,interval,length_0_520_cm,length_521_660_cm,length_661_1160_cm,length_1160_plus_cm,speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_volume" ]
+  [ ${lines[0]} = "site_name,report_date,time_period_end,interval,len_0_520_cm,len_521_660_cm,len_661_1160_cm,len_1160_plus_cm,speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_vol" ]
   [ ${lines[1]} = "M602/6051A,2015-01-01T00:00:00,00:59:00,,,,,,,,,,,,,,,,,,,,,332" ]
   [ ${lines[2]} = "M602/6051A,2015-01-01T00:00:00,01:59:00,,,,,,,,,,,,,,,,,,,,,396" ]
   [ ${lines[3]} = "M602/6051A,2015-01-01T00:00:00,00:59:00,,,,,,,,,,,,5,,,,,,,,,100" ]
@@ -359,7 +359,7 @@ EOF
   echo "result = $output"
 
   [ "$status" -eq 0 ]
-  [ ${lines[0]} = "site_name,report_date,time_period_end,interval,length_0_520_cm,length_521_660_cm,length_661_1160_cm,length_1160_plus_cm,speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_volume" ]
+  [ ${lines[0]} = "site_name,report_date,time_period_end,interval,len_0_520_cm,len_521_660_cm,len_661_1160_cm,len_1160_plus_cm,speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_vol" ]
   [ ${lines[1]} = "M602/6051A,2018-01-01T00:00:00,00:14:00,0,78,2,0,0,,,,,,,,,,,,,,,62,80" ]
   [ ${lines[2]} = "M602/6051A,2018-01-01T00:00:00,00:29:00,1,72,1,0,0,,,,,,,,,,,,,,,62,73" ]
   [ ${#lines[@]} == 3 ]
