@@ -149,8 +149,8 @@ get_area() {
 #
 # Examples
 #
-# get_quality 5688 01012018 04012018 daily
-# get_quality 5688,5699 01012018 04012018 overall
+#   get_quality 5688 01012018 04012018 daily
+#   get_quality 5688,5699 01012018 04012018 overall
 #
 # Returns
 #
@@ -185,8 +185,8 @@ get_quality() {
 #
 # Examples
 #
-# get_report 5688 daily 01012015 01012018
-# get_report 5688 daily 01012018 01012018
+#   get_report 5688 daily 01012015 01012018
+#   get_report 5688 daily 01012018 01012018
 #
 # Returns
 #
@@ -266,9 +266,9 @@ get_report() {
 #
 # Examples
 #
-# get_sites
-# get_sites 5688
-# get_sites 5688,5689
+#   get_sites
+#   get_sites 5688
+#   get_sites 5688,5689
 #
 # Returns
 #
@@ -298,7 +298,7 @@ get_sites() {
 #
 # Examples
 #
-# get_site_types
+#   get_site_types
 #
 # Returns
 #
@@ -334,8 +334,8 @@ get_site_types() {
 #
 # Examples
 #
-# get_site_by_type
-# get_site_by_type 1
+#   get_site_by_type
+#   get_site_by_type 1
 #
 # Returns
 #

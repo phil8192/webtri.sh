@@ -39,7 +39,8 @@ Note that the orignal API contains a bug in which the overall quality is not cal
 
 Examples
 
-get_quality 5688 01012018 04012018 daily get_quality 5688,5699 01012018 04012018 overall
+    get_quality 5688 01012018 04012018 daily
+    get_quality 5688,5699 01012018 04012018 overall
 
 Returns
 
@@ -61,7 +62,8 @@ This is the main part of the API. A site report consists of a number of variable
 
 Examples
 
-get_report 5688 daily 01012015 01012018 get_report 5688 daily 01012018 01012018
+    get_report 5688 daily 01012015 01012018
+    get_report 5688 daily 01012018 01012018
 
 Returns
 
@@ -102,7 +104,9 @@ Get all avaiable site details and status.
 
 Examples
 
-get_sites get_sites 5688 get_sites 5688,5689
+    get_sites
+    get_sites 5688
+    get_sites 5688,5689
 
 Returns
 
@@ -123,7 +127,7 @@ Get site types. This is static info.
 
 Examples
 
-get_site_types
+    get_site_types
 
 Returns
 
@@ -151,7 +155,8 @@ Filter site information by site type. Use `get_site_types` function to see avail
 
 Examples
 
-get_site_by_type get_site_by_type 1
+    get_site_by_type
+    get_site_by_type 1
 
 Returns
 
