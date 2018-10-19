@@ -116,6 +116,16 @@ Examples:
 `webtris.sh` can be sourced in/imported or run directly. see [docs](docs.md) for
 full function info.
 
+## Dependencies
+
+* [Command-line JSON processor](https://stedolan.github.io/jq/) (otional) If not installed or specified, `webtri.sh` will return raw JSON data.
+
+### Testing and Recommended
+
+* [ShellCheck, a static analysis tool for shell scripts](https://github.com/koalaman/shellcheck)
+* [Bash Automated Testing System (BATS)](https://github.com/sstephenson/bats)
+
+
 ## license
 
 [GNU General Public License family](https://en.wikipedia.org/wiki/GNU_General_Public_License)
