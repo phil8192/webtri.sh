@@ -8,8 +8,6 @@
 > [WebTRIS Traffic Flow API](http://webtris.highwaysengland.co.uk/api/swagger/ui/index) shell client.
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![build](https://travis-ci.org/phil8192/wentri.sh?branch=master)](https://travis-ci.org/phil8192/webtri.sh)
-[![codecov](https://codecov.io/gh/phil8192/phil8192/branch/master/graph/badge.svg)](https://codecov.io/gh/phil8192/webtri.sh)
 [![LICENSE.](https://img.shields.io/aur/license/yaourt.svg)](https://img.shields.io/aur/license/yaourt.svg)
 
 This script wraps the Highways England webtris API. The webtris API enables one
