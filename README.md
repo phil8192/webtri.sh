@@ -123,7 +123,7 @@ full function info.
 
 * [Command-line JSON processor](https://stedolan.github.io/jq/) (optional) If not installed or specified, `webtri.sh` will return raw JSON data.
 
-### Testing and Recommended
+### Testing and recommended
 
 * [Debian Almquist shell (DASH)](https://www.in-ulm.de/~mascheck/various/ash/)
 * [ShellCheck, a static analysis tool for shell scripts](https://github.com/koalaman/shellcheck)
