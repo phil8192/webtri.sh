@@ -111,7 +111,7 @@ Examples:
   ./webtri.sh -f get_site_by_type -a 1
 ```
 
-## documentation
+## Documentation
 
 `webtris.sh` can be sourced in/imported or run directly. see [docs](docs.md) for
 full function info.
@@ -126,7 +126,7 @@ full function info.
 * [Bash Automated Testing System (BATS)](https://github.com/sstephenson/bats)
 
 
-## license
+## License
 
 [GNU General Public License family](https://en.wikipedia.org/wiki/GNU_General_Public_License)
 v([3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)).
