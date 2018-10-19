@@ -125,6 +125,7 @@ full function info.
 
 ### Testing and Recommended
 
+* [Debian Almquist shell (DASH)](https://www.in-ulm.de/~mascheck/various/ash/)
 * [ShellCheck, a static analysis tool for shell scripts](https://github.com/koalaman/shellcheck)
 * [Bash Automated Testing System (BATS)](https://github.com/sstephenson/bats)
 
