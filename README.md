@@ -121,7 +121,7 @@ full function info.
 
 ## Dependencies
 
-* [Command-line JSON processor](https://stedolan.github.io/jq/) (otional) If not installed or specified, `webtri.sh` will return raw JSON data.
+* [Command-line JSON processor](https://stedolan.github.io/jq/) (optional) If not installed or specified, `webtri.sh` will return raw JSON data.
 
 ### Testing and Recommended
 
