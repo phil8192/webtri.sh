@@ -1,4 +1,7 @@
-language: sh
+language: bash
+
+os:
+  - linux
 
 before_install:
   - sudo add-apt-repository ppa:duggan/bats --yes
