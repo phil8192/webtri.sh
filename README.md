@@ -1,4 +1,4 @@
-# webtri.sh
+# ./webtri.sh
 
 <p align="center">
   <img src="na/meh.jpg" alt="highways england"/>
@@ -12,9 +12,9 @@ This script wraps the Highways England webtris API.
 Features include:
 
 * [POSIX](http://pubs.opengroup.org/onlinepubs/9699919799/) compliant, portable code between UNIX systems.
-* Decoupled ([./jq programming language])https://stedolan.github.io/jq/) JSON parsing. Option to produce CSV or JSON output.
+* Decoupled [./jq programming language])(https://stedolan.github.io/jq/) JSON parsing. Option to produce CSV or JSON output.
 * Unit tests with [Bash Automated Testing System](https://github.com/sstephenson/bats) (BATS). See code in [test/](https://github.com/phil8192/webtri.sh/tree/master/test) directory.
-* Documented functions, borrowed from Ruby (Tomdoc)[http://tomdoc.org/] format. documentation generated using [tomdoc.sh](https://github.com/tests-always-included/tomdoc.sh)
+* Documented functions, borrowed from Ruby [Tomdoc](http://tomdoc.org/) format. documentation generated using [tomdoc.sh](https://github.com/tests-always-included/tomdoc.sh)
 * Fixes a bug detected in official API: Site quality stats will be returned correctly.
 
 ## Running
