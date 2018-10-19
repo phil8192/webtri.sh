@@ -370,12 +370,85 @@ get_site_by_type() {
 }
 
 usage() {
-  echo "$0 -f <function> -a \"<args>\""
-  echo
-  echo "where <function is one of:"
-  echo "area, quality, report,sites, site_types, site_by_type"
-  echo
-  echo "and <args> should be inclosed in double quotes."
+  echo "./webtri.sh -f <function> -a \"<args>\""
+  cat << EOF
+Where <function> is one of:
+
+  area, quality, report, sites, site_types, site_by_type.
+
+  [area] Get an area bounding box.
+    args
+      1. An optional area id.
+
+    The trunk roads are divided up into various pre-defined areas. Given an
+    (optional) area id, return the coordinates of a bounding box(es). Return all
+    areas if an area id argument has not been supplied.
+
+
+  [quality] Get overall or daily quality.
+    args
+      1. Comma seperated list of site ids. Or single site id if daily.
+      2. ddmmyyyy start period.
+      3. ddmmyyyy end period.
+      4. overall or daily.
+
+    If overall quality has been specified, gets the quality in terms of a
+    percentage score. The percentage represents aggregated site data
+    availability for the specified time period. If daily has been specified,
+    Gets the day by day percentage quality for each site.
+
+    Note that the orignal API contains a bug in which the overall quality is not
+    calculated correctly. If CSV output has been specified (or jq is not
+    present) This implementation will automatically correct for this bug.
+
+
+  [report] Get site report.
+    args
+      1. Comma seperated list of site ids. Or single site id if daily.
+      2. ddmmyyyy start period.
+      3. ddmmyyyy end period.
+      4. overall or daily.
+
+    This is the main part of the API. A site report consists of a number of
+    variables for each time period (minimum 15 minute interval) covering vehicle
+    lengths, speeds and total counts.
+
+
+  [sites] Get sites.
+    args
+      1. Comma seperated list of site ids. (optional)
+
+    Get all avaiable site details and status.
+
+
+  [site_types] Get site types.
+    Get site types. This is static info.
+
+
+  [site_by_type] Get sites by type.
+    args
+      1. Site type.
+    Filter site information by site type.
+
+
+<args> should be inclosed in double quotes.
+
+
+Examples:
+
+  ./webtri.sh -f get_area         -a 1
+  ./webtri.sh -f get_area
+  ./webtri.sh -f get_quality      -a "5688 01012018 04012018 daily"
+  ./webtri.sh -f get_quality      -a "5688,5699 01012018 04012018 overall"
+  ./webtri.sh -f get_report       -a "5688 daily 01012015 01012018"
+  ./webtri.sh -f get_report       -a "5688 daily 01012018 01012018"
+  ./webtri.sh -f get_sites
+  ./webtri.sh -f get_sites        -a 5688
+  ./webtri.sh -f get_site_by_type
+  ./webtri.sh -f get_site_by_type -a 1
+
+EOF
+
 }
 
 while getopts "hf:a:" opt; do
