@@ -7,7 +7,10 @@
 > Unofficial [Highways England](https://www.gov.uk/government/organisations/highways-england)
 > [WebTRIS Traffic Flow API](http://webtris.highwaysengland.co.uk/api/swagger/ui/index) shell client.
 
-This script wraps the Highways England webtris API.
+This script wraps the Highways England webtris API. The webtris API enables one
+to extract historical road traffic data for the main roads within the English
+trunk road network at 15 minute intervals. The data has been recorded using
+[induction loops](https://en.wikipedia.org/wiki/Induction_loop).
 
 Features include:
 
