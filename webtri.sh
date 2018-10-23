@@ -14,7 +14,20 @@ ENDPOINT="http://webtris.highwaysengland.co.uk/api/v1.0"
 MAX_ROWS=40000
 JQ=true
 
-
+# Internal: Check if bounding box contains point.
+#
+# $1 - Bounding box South East Longitude
+# $2 - Bounding box South East Latitude
+# $3 - Bounding box North West Longitude
+# $4 - Bounding box North West Latitude
+# $5 - Query point Longitude
+# $6 - Query point Latitude
+#
+# Examples
+#
+#   _in_bounding_box -2.007464 53.344107 2.485731 53.612572 -2.244581 53.477487
+#
+# Returns true if point in bounding box, false otherwise.
 _in_bounding_box() {
   se_lon=$1
   se_lat=$2
@@ -23,10 +36,10 @@ _in_bounding_box() {
   qp_lon=$5
   qp_lat=$6
 
-  if [ $(echo "$nw_lon <= $qp_lon" |bc) -eq 1 ] &&
-     [ $(echo "$qp_lon <= $se_lon" |bc) -eq 1 ] &&
-     [ $(echo "$se_lat <= $qp_lat" |bc) -eq 1 ] &&
-     [ $(echo "$qp_lat <= $nw_lat" |bc) -eq 1 ] ;then
+  if [ "$(echo "$nw_lon <= $qp_lon" |bc)" -eq 1 ] &&
+     [ "$(echo "$qp_lon <= $se_lon" |bc)" -eq 1 ] &&
+     [ "$(echo "$se_lat <= $qp_lat" |bc)" -eq 1 ] &&
+     [ "$(echo "$qp_lat <= $nw_lat" |bc)" -eq 1 ] ;then
       echo true
   else
     echo false
