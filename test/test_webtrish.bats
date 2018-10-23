@@ -521,8 +521,8 @@ EOF
 
   [ "$status" -eq 0 ]
   [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
-  [ ${lines[1]} = "1,MIDAS site at M4/2295A2 priority 1 on link 105009001; GPS Ref: 502816;178156; Westbound,M4/2295A2,-0.520379557723297,51.4930115367112,Inactive" ]
-  [ ${lines[2]} = "2,MIDAS site at A1M/2259B priority 1 on link 126046101; GPS Ref: 514029;294356; Southbound,A1M/2259B,-0.320275451712423,52.5351577963853,Active" ]
+  [ ${lines[1]} = '"1","MIDAS site at M4/2295A2 priority 1 on link 105009001; GPS Ref: 502816;178156; Westbound","M4/2295A2",-0.520379557723297,51.4930115367112,"Inactive"' ]
+  [ ${lines[2]} = '"2","MIDAS site at A1M/2259B priority 1 on link 126046101; GPS Ref: 514029;294356; Southbound","A1M/2259B",-0.320275451712423,52.5351577963853,"Active"' ]
   [ ${#lines[@]} == 3 ]
 }
 
