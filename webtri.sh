@@ -46,24 +46,6 @@ _in_bounding_box() {
   fi
 }
 
-_filter_bounding_box() {
-  se_lon=$1
-  se_lat=$2
-  nw_lon=$3
-  nw_lat=$4
-
-  while read row ;do
-    read -r qp_lon qp_lat <<< $(echo "$row" \
-        |sed 's/\".*\",//' \
-        |awk -F ',' '{print $1 " " $2}')
-    #if [ $(_in_bounding_box $se_lon $se_lat \
-    #                        $nw_lon $nw_lat \
-    #                        $qp_lon $qp_lat) = true ] ;then
-      echo "$row"
-    #fi
-  done
-}
-
 # Internal: Get seconds since epoch for ddmmyyyy formated date.
 #
 # $1 - ddmmyyyy date
@@ -340,19 +322,11 @@ get_report() {
 get_sites() {
   site_ids=$1
 
-  # optional bounding box
-  se_lon=$1
-  se_lat=$2
-  nw_lon=$3
-  nw_lat=$4
-
   raw=$(curl -s -X GET --header 'Accept: application/json' \
       "$ENDPOINT/sites/$site_ids")
   if [ "$JQ" = true ] ;then
     echo "id,name,description,longitude,latitude,status"
-    echo "$raw" \
-        |jq -r '.sites | .[] | map(.) |@csv' \
-        |_filter_bounding_box
+    echo "$raw" |jq -r '.sites | .[] | map(.) |@csv'
   else
     echo "$raw"
   fi
@@ -425,14 +399,60 @@ get_site_by_type() {
   fi
 }
 
+# Public: Get sites in a bounding box.
+#
+# $1 - Bounding box South East Longitude
+# $2 - Bounding box South East Latitude
+# $3 - Bounding box North West Longitude
+# $4 - Bounding box North West Latitude
+#
+# Get all sites inside a defined bounding box.
+#
+# Examples
+#
+#   get_sites_in_box 2.007464 53.344107 -2.485731 53.612572
+#
+# Returns
+#
+#   * id
+#   * name
+#   * description
+#   * longitude
+#   * latitude
+#   * status
+get_sites_in_box() {
+  # note that this is pretty slow. probably better off doing this elsewhere.
+  se_lon=$1
+  se_lat=$2
+  nw_lon=$3
+  nw_lat=$4
+
+  sites="$(get_sites)"
+  echo "$sites" |head -1
+  echo "$sites" |tail +2 |while read -r row ;do
+    # remove everything inside quotes up until lon,lat then get lon,lat.
+    # (quoted string may contain commas which would break awk -F ',')
+    lon_lat="$(echo "$row" \
+        |sed 's/\".*\",//' \
+        |awk -F ',' '{print $1 " " $2}')"
+    qp_lon="$(echo "$lon_lat" |cut -f 1 -d ' ')"
+    qp_lat="$(echo "$lon_lat" |cut -f 2 -d ' ')"
+    if [ "$(_in_bounding_box "$se_lon" "$se_lat" \
+                             "$nw_lon" "$nw_lat" \
+                             "$qp_lon" "$qp_lat")" = true ] ;then
+      echo "$row"
+    fi
+  done
+}
+
 usage() {
   echo "./webtri.sh -f <function> -a \"<args>\""
   cat << EOF
 Where <function> is one of:
 
-  area, quality, report, sites, site_types, site_by_type.
+  get_area, get_quality, get_report, get_sites, get_site_types, get_site_by_type.
 
-  [area] Get an area bounding box.
+  [get_area] Get an area bounding box.
     args
       1. An optional area id.
 
@@ -441,7 +461,7 @@ Where <function> is one of:
     areas if an area id argument has not been supplied.
 
 
-  [quality] Get overall or daily quality.
+  [get_quality] Get overall or daily quality.
     args
       1. Comma seperated list of site ids. Or single site id if daily.
       2. ddmmyyyy start period.
@@ -458,7 +478,7 @@ Where <function> is one of:
     present) This implementation will automatically correct for this bug.
 
 
-  [report] Get site report.
+  [get_report] Get site report.
     args
       1. Comma seperated list of site ids. Or single site id if daily.
       2. ddmmyyyy start period.
@@ -470,22 +490,26 @@ Where <function> is one of:
     lengths, speeds and total counts.
 
 
-  [sites] Get sites.
+  [get_sites] Get sites.
     args
       1. Comma seperated list of site ids. (optional)
 
     Get all avaiable site details and status.
 
 
-  [site_types] Get site types.
+  [get_site_types] Get site types.
     Get site types. This is static info.
 
 
-  [site_by_type] Get sites by type.
+  [get_site_by_type] Get sites by type.
     args
       1. Site type.
     Filter site information by site type.
 
+
+  [get_sites_in_box]
+    args
+      1.
 
 <args> should be inclosed in double quotes.
 
@@ -502,6 +526,7 @@ Examples:
   ./webtri.sh -f get_sites        -a 5688
   ./webtri.sh -f get_site_types
   ./webtri.sh -f get_site_by_type -a 1
+  ./webtri.sh -f get_sites_in_box -a "-2.007464 53.344107 -2.485731 53.612572"
 
 EOF
 
@@ -537,9 +562,10 @@ else
      [ "$fun" != "get_report"       ] &&
      [ "$fun" != "get_sites"        ] &&
      [ "$fun" != "get_site_types"   ] &&
-     [ "$fun" != "get_site_by_type" ] ;then
+     [ "$fun" != "get_site_by_type" ] &&
+     [ "$fun" != "get_sites_in_box" ] ;then
     echo "Must specify:" >&2
-    echo "get_{area,quality,report,sites,site_types,site_by_type}" >&2
+    echo "get_{area,quality,report,sites,site_types,site_by_type,get_sites_in_box}" >&2
     exit 1
   else
     # need to parse args in a nicer way.
