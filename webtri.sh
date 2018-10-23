@@ -14,6 +14,25 @@ ENDPOINT="http://webtris.highwaysengland.co.uk/api/v1.0"
 MAX_ROWS=40000
 JQ=true
 
+
+_in_bounding_box() {
+  se_lon=$1
+  se_lat=$2
+  nw_lon=$3
+  nw_lat=$4
+  qp_lon=$5
+  qp_lat=$6
+
+  if [ $(echo "$nw_lon <= $qp_lon" |bc) -eq 1 ] &&
+     [ $(echo "$qp_lon <= $se_lon" |bc) -eq 1 ] &&
+     [ $(echo "$se_lat <= $qp_lat" |bc) -eq 1 ] &&
+     [ $(echo "$qp_lat <= $nw_lat" |bc) -eq 1 ] ;then
+      echo true
+  else
+    echo false
+  fi
+}
+
 # Internal: Get seconds since epoch for ddmmyyyy formated date.
 #
 # $1 - ddmmyyyy date
