@@ -17,10 +17,10 @@ Returns
     * id
     * name
     * description
-    * x_lon
-    * x_lat
-    * y_lon
-    * y_lat
+    * x_lon (South East longitude)
+    * x_lat (South East latitude)
+    * y_lon (North West longitude)
+    * y_lat (North West latitude)
 
 
 `get_quality()`
