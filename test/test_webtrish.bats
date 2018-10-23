@@ -576,3 +576,108 @@ EOF
   [ ${lines[4]} = "4,Legacy" ]
   [ ${#lines[@]} == 5 ]
 }
+
+@test "_in_bounding_box" {
+  se_lon=-2.007464
+  se_lat=53.344107
+  nw_lon=-2.485731
+  nw_lat=53.612572
+
+  run _in_bounding_box    \
+      $se_lon $se_lat     \
+      $nw_lon $nw_lat     \
+      -2.244581 53.477487
+
+  echo $output
+
+  [ "$status" -eq 0 ]
+  [ "$output" = true ]
+
+
+  run _in_bounding_box    \
+      $se_lon $se_lat     \
+      $nw_lon $nw_lat     \
+      -2.466122 53.611671
+
+  echo $output
+
+  [ "$status" -eq 0 ]
+  [ "$output" = true ]
+
+
+  run _in_bounding_box    \
+      $se_lon $se_lat     \
+      $nw_lon $nw_lat     \
+      -2.038313 53.366477
+
+  echo $output
+
+  [ "$status" -eq 0 ]
+  [ "$output" = true ]
+
+
+  run _in_bounding_box    \
+      $se_lon $se_lat     \
+      $nw_lon $nw_lat     \
+      -2.566129 53.466369
+
+  echo $output
+
+  [ "$status" -eq 0 ]
+  [ "$output" = false ]
+
+
+  run _in_bounding_box    \
+      $se_lon $se_lat     \
+      $nw_lon $nw_lat     \
+      -1.905984 3.460125
+
+  echo $output
+
+  [ "$status" -eq 0 ]
+  [ "$output" = false ]
+
+
+  run _in_bounding_box    \
+      $se_lon $se_lat     \
+      $nw_lon $nw_lat     \
+      -2.274609 53.282153
+
+  echo $output
+
+  [ "$status" -eq 0 ]
+  [ "$output" = false ]
+
+
+  run _in_bounding_box    \
+      $se_lon $se_lat     \
+      $nw_lon $nw_lat     \
+      -2.257312 53.690637
+
+  echo $output
+
+  [ "$status" -eq 0 ]
+  [ "$output" = false ]
+
+
+  run _in_bounding_box    \
+      $se_lon $se_lat     \
+      $nw_lon $nw_lat     \
+      -2.857581 53.809339
+
+  echo $output
+
+  [ "$status" -eq 0 ]
+  [ "$output" = false ]
+
+
+  run _in_bounding_box    \
+      $se_lon $se_lat     \
+      $nw_lon $nw_lat     \
+      -1.539683 53.094211
+
+  echo $output
+
+  [ "$status" -eq 0 ]
+  [ "$output" = false ]
+}
