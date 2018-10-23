@@ -168,3 +168,29 @@ Returns
     * status
 
 
+`get_sites_in_box()`
+--------------------
+
+Public: Get sites in a bounding box.
+
+* $1 - Bounding box South East Longitude
+* $2 - Bounding box South East Latitude
+* $3 - Bounding box North West Longitude
+* $4 - Bounding box North West Latitude
+
+Get all sites inside a defined bounding box.
+
+Examples
+
+    get_sites_in_box 2.007464 53.344107 -2.485731 53.612572
+
+Returns
+
+    * id
+    * name
+    * description
+    * longitude
+    * latitude
+    * status
+
+
