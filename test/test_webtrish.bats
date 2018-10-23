@@ -388,6 +388,14 @@ EOF
           "Longitude": -0.320275451712423,
           "Latitude": 52.5351577963853,
           "Status": "Active"
+        },
+        {
+          "Id": "17087",
+          "Name": "MIDAS site at M60/9325L, 024/6/220/306 on M66 northbound within the M60/M62 junction on road M60  at location 53.547722780566000,-2.258293219653000",
+          "Description": "NO MIDAS ID",
+          "Longitude": -2.258293219653,
+          "Latitude": 53.547722780566,
+          "Status": "Inactive"
         }
       ]
     }
@@ -400,9 +408,10 @@ EOF
 
   [ "$status" -eq 0 ]
   [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
-  [ ${lines[1]} = "1,MIDAS site at M4/2295A2 priority 1 on link 105009001; GPS Ref: 502816;178156; Westbound,M4/2295A2,-0.520379557723297,51.4930115367112,Inactive" ]
-  [ ${lines[2]} = "2,MIDAS site at A1M/2259B priority 1 on link 126046101; GPS Ref: 514029;294356; Southbound,A1M/2259B,-0.320275451712423,52.5351577963853,Active" ]
-  [ ${#lines[@]} == 3 ]
+  [ ${lines[1]} = '"1","MIDAS site at M4/2295A2 priority 1 on link 105009001; GPS Ref: 502816;178156; Westbound","M4/2295A2",-0.520379557723297,51.4930115367112,"Inactive"' ]
+  [ ${lines[2]} = '"2","MIDAS site at A1M/2259B priority 1 on link 126046101; GPS Ref: 514029;294356; Southbound","A1M/2259B",-0.320275451712423,52.5351577963853,"Active"' ]
+  [ ${lines[3]} = '"17087","MIDAS site at M60/9325L, 024/6/220/306 on M66 northbound within the M60/M62 junction on road M60  at location 53.547722780566000,-2.258293219653000","NO MIDAS ID",-2.258293219653,53.547722780566,"Inactive"' ]
+  [ ${#lines[@]} == 4 ]
 }
 
 @test "get_sites 5688" {
@@ -432,7 +441,7 @@ EOF
 
   [ "$status" -eq 0 ]
   [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
-  [ ${lines[1]} = "5688,MIDAS site at M602/6051A priority 1 on link 115042101; GPS Ref: 379545;398603; Eastbound,M602/6051A,-2.30971169539053,53.4837600708868,Active" ]
+  [ ${lines[1]} = '"5688","MIDAS site at M602/6051A priority 1 on link 115042101; GPS Ref: 379545;398603; Eastbound","M602/6051A",-2.30971169539053,53.4837600708868,"Active"' ]
   [ ${#lines[@]} == 2 ]
 }
 
@@ -471,8 +480,8 @@ EOF
 
   [ "$status" -eq 0 ]
   [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
-  [ ${lines[1]} = "5688,MIDAS site at M602/6051A priority 1 on link 115042101; GPS Ref: 379545;398603; Eastbound,M602/6051A,-2.30971169539053,53.4837600708868,Active" ]
-  [ ${lines[2]} = "5689,MIDAS site at A168/9022M priority 1 on link 118013602; GPS Ref: 437757;473402; Southbound,A168/9022M,-1.42335955807952,54.1550672365429,Active" ]
+  [ ${lines[1]} = '"5688","MIDAS site at M602/6051A priority 1 on link 115042101; GPS Ref: 379545;398603; Eastbound","M602/6051A",-2.30971169539053,53.4837600708868,"Active"' ]
+  [ ${lines[2]} = '"5689","MIDAS site at A168/9022M priority 1 on link 118013602; GPS Ref: 437757;473402; Southbound","A168/9022M",-1.42335955807952,54.1550672365429,"Active"' ]
   [ ${#lines[@]} == 3 ]
 
 }
