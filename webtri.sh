@@ -53,7 +53,14 @@ _filter_bounding_box() {
   nw_lat=$4
 
   while read row ;do
-    echo $row
+    read -r qp_lon qp_lat <<< $(echo "$row" \
+        |sed 's/\".*\",//' \
+        |awk -F ',' '{print $1 " " $2}')
+    #if [ $(_in_bounding_box $se_lon $se_lat \
+    #                        $nw_lon $nw_lat \
+    #                        $qp_lon $qp_lat) = true ] ;then
+      echo "$row"
+    #fi
   done
 }
 
@@ -332,14 +339,20 @@ get_report() {
 #   * status
 get_sites() {
   site_ids=$1
+
+  # optional bounding box
+  se_lon=$1
+  se_lat=$2
+  nw_lon=$3
+  nw_lat=$4
+
   raw=$(curl -s -X GET --header 'Accept: application/json' \
       "$ENDPOINT/sites/$site_ids")
   if [ "$JQ" = true ] ;then
     echo "id,name,description,longitude,latitude,status"
     echo "$raw" \
-        |jq -r '.sites | .[] | map(.) |@csv' #\
-        #|sed 's/\"//g' \
-        #|cat #_filter_bounding_box
+        |jq -r '.sites | .[] | map(.) |@csv' \
+        |_filter_bounding_box
   else
     echo "$raw"
   fi
