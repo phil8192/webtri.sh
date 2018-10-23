@@ -40,7 +40,7 @@ _in_bounding_box() {
      [ "$(echo "$qp_lon <= $se_lon" |bc)" -eq 1 ] &&
      [ "$(echo "$se_lat <= $qp_lat" |bc)" -eq 1 ] &&
      [ "$(echo "$qp_lat <= $nw_lat" |bc)" -eq 1 ] ;then
-      echo true
+    echo true
   else
     echo false
   fi
@@ -502,7 +502,7 @@ while getopts "hf:a:" opt; do
   esac
 done
 
-if [ -z "$fun" ] || [ -z "$args" ]; then
+if [ -z "$fun" ] ; then
   if [ "$0" = "./webtri.sh" ] ;then
     usage
     exit 1
