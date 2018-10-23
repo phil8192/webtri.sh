@@ -46,6 +46,17 @@ _in_bounding_box() {
   fi
 }
 
+_filter_bounding_box() {
+  se_lon=$1
+  se_lat=$2
+  nw_lon=$3
+  nw_lat=$4
+
+  while read row ;do
+    echo $row
+  done
+}
+
 # Internal: Get seconds since epoch for ddmmyyyy formated date.
 #
 # $1 - ddmmyyyy date
@@ -327,7 +338,8 @@ get_sites() {
     echo "id,name,description,longitude,latitude,status"
     echo "$raw" \
         |jq -r '.sites | .[] | map(.) |@csv' \
-        |sed 's/\"//g'
+        |sed 's/\"//g' \
+        |cat #_filter_bounding_box
   else
     echo "$raw"
   fi
