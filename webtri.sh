@@ -476,7 +476,7 @@ Examples:
   ./webtri.sh -f get_report       -a "5688 daily 01012018 01012018"
   ./webtri.sh -f get_sites
   ./webtri.sh -f get_sites        -a 5688
-  ./webtri.sh -f get_site_by_type
+  ./webtri.sh -f get_site_types
   ./webtri.sh -f get_site_by_type -a 1
 
 EOF
