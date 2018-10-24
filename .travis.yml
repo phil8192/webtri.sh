@@ -10,8 +10,8 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq bats
 
-script:
-  - bats test/test_webtrish.bats
+#script:
+#  - bats test/test_webtrish.bats
 
 addons:
   apt:
@@ -33,5 +33,5 @@ after_success: |
   cd ../.. &&
   rm -rf kcov-master &&
   mkdir -p coverage &&
-  kcov coverage script.sh &&
+  kcov coverage bats test &&
   bash <(curl -s https://codecov.io/bash)
