@@ -1,4 +1,8 @@
 # ./webtri.sh
+[![active](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![build](https://travis-ci.org/phil8192/webtri.sh.svg?branch=master)](https://travis-ci.org/phil8192/webtri.sh)
+[![codecov](https://codecov.io/gh/phil8192/webtri.sh/branch/master/graph/badge.svg)](https://codecov.io/gh/phil8192/webtri.sh)
+[![license](https://img.shields.io/aur/license/yaourt.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 <p align="center">
   <img src="na/meh.jpg" alt="highways england"/>
@@ -6,11 +10,6 @@
 
 > Unofficial [Highways England](https://www.gov.uk/government/organisations/highways-england)
 > [WebTRIS Traffic Flow API](http://webtris.highwaysengland.co.uk/api/swagger/ui/index) shell client.
-
-[![active](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![build](https://travis-ci.org/phil8192/webtri.sh.svg?branch=master)](https://travis-ci.org/phil8192/webtri.sh)
-[![codecov](https://codecov.io/gh/phil8192/webtri.sh/branch/master/graph/badge.svg)](https://codecov.io/gh/phil8192/webtri.sh)
-[![license](https://img.shields.io/aur/license/yaourt.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 This script wraps the Highways England webtris API. The webtris API enables one
 to extract historical road traffic data for the main roads within the English

@@ -10,8 +10,8 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq bats
 
-#script:
-#  - bats test/test_webtrish.bats
+script:
+  - bats test/test_webtrish.bats
 
 addons:
   apt:
