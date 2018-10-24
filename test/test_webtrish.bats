@@ -688,5 +688,5 @@ EOF
   echo $output
 
   [ "$status" -eq 0 ]
-  [ "$output" = true ]
+  [ "$output" = false ]
 }
