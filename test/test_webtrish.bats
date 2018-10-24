@@ -32,7 +32,7 @@ EOF
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "id,name,description,x_lon,x_lat,y_lon,y_lat" ]
   [ "${lines[1]}" = "1,lala,descr,-1.123,53.123,-1.55,54.1" ]
-  [ ${#lines[@]} == 2 ]
+  [ "${#lines[@]}" -eq 2 ]
 }
 
 @test "get_area" {
@@ -74,7 +74,7 @@ EOF
   [ "${lines[0]}" = "id,name,description,x_lon,x_lat,y_lon,y_lat" ]
   [ "${lines[1]}" = "1,lala,descr,-1.123,53.123,-1.55,54.1" ]
   [ "${lines[2]}" = "2,heh,x,1,2,3,4" ]
-  [ ${#lines[@]} == 3 ]
+  [ "${#lines[@]}" -eq 3 ]
 }
 
 @test "get_quality 5688 01012018 04012018 daily" {
@@ -116,7 +116,7 @@ EOF
   [ "${lines[2]}" = "2018-01-02T00:00:00,100" ]
   [ "${lines[3]}" = "2018-01-03T00:00:00,100" ]
   [ "${lines[4]}" = "2018-01-04T00:00:00,100" ]
-  [ ${#lines[@]} == 5 ]
+  [ "${#lines[@]}" -eq 5 ]
 }
 
 @test "get_quality 5688,5699 01012018 04012018 overall" {
@@ -144,7 +144,7 @@ EOF
   # note that remote will actually return 67 due to bug.
   # client corrects for this.
   [ "${lines[1]}" = "50" ]
-  [ ${#lines[@]} == 2 ]
+  [ "${#lines[@]}" -eq 2 ]
 }
 
 @test "get_report 5688 daily 01012015 01012018" {
@@ -277,11 +277,11 @@ EOF
   echo "result = $output"
 
   [ "$status" -eq 0 ]
-  [ ${lines[0]} = "site_name,report_date,time_period_end,interval,len_0_520_cm,len_521_660_cm,len_661_1160_cm,len_1160_plus_cm,speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_vol" ]
-  [ ${lines[1]} = "M602/6051A,2015-01-01T00:00:00,00:59:00,,,,,,,,,,,,,,,,,,,,,332" ]
-  [ ${lines[2]} = "M602/6051A,2015-01-01T00:00:00,01:59:00,,,,,,,,,,,,,,,,,,,,,396" ]
-  [ ${lines[3]} = "M602/6051A,2015-01-01T00:00:00,00:59:00,,,,,,,,,,,,5,,,,,,,,,100" ]
-  [ ${#lines[@]} == 4 ]
+  [ "${lines[0]}" = "site_name,report_date,time_period_end,interval,len_0_520_cm,len_521_660_cm,len_661_1160_cm,len_1160_plus_cm,speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_vol" ]
+  [ "${lines[1]}" = "M602/6051A,2015-01-01T00:00:00,00:59:00,,,,,,,,,,,,,,,,,,,,,332" ]
+  [ "${lines[2]}" = "M602/6051A,2015-01-01T00:00:00,01:59:00,,,,,,,,,,,,,,,,,,,,,396" ]
+  [ "${lines[3]}" = "M602/6051A,2015-01-01T00:00:00,00:59:00,,,,,,,,,,,,5,,,,,,,,,100" ]
+  [ "${#lines[@]}" -eq 4 ]
 }
 
 @test "get_report 5688 daily 01012018 01012018" {
@@ -359,10 +359,10 @@ EOF
   echo "result = $output"
 
   [ "$status" -eq 0 ]
-  [ ${lines[0]} = "site_name,report_date,time_period_end,interval,len_0_520_cm,len_521_660_cm,len_661_1160_cm,len_1160_plus_cm,speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_vol" ]
-  [ ${lines[1]} = "M602/6051A,2018-01-01T00:00:00,00:14:00,0,78,2,0,0,,,,,,,,,,,,,,,62,80" ]
-  [ ${lines[2]} = "M602/6051A,2018-01-01T00:00:00,00:29:00,1,72,1,0,0,,,,,,,,,,,,,,,62,73" ]
-  [ ${#lines[@]} == 3 ]
+  [ "${lines[0]}" = "site_name,report_date,time_period_end,interval,len_0_520_cm,len_521_660_cm,len_661_1160_cm,len_1160_plus_cm,speed_0_10_mph,speed_11_15_mph,speed_16_20_mph,speed_21_25_mph,speed_26_30_mph,sped_31_35_mph,speed_36_40_mph,speed_41_45_mph,speed_46_50_mph,speed_51_55_mph,speed_56_60_mph,speed_61_70_mph,speed_71_80_mph,speed_80_plus_mph,speed_avg_mph,total_vol" ]
+  [ "${lines[1]}" = "M602/6051A,2018-01-01T00:00:00,00:14:00,0,78,2,0,0,,,,,,,,,,,,,,,62,80" ]
+  [ "${lines[2]}" = "M602/6051A,2018-01-01T00:00:00,00:29:00,1,72,1,0,0,,,,,,,,,,,,,,,62,73" ]
+  [ "${#lines[@]}" -eq 3 ]
 }
 
 @test "get_sites" {
@@ -407,11 +407,11 @@ EOF
   echo "result = $output"
 
   [ "$status" -eq 0 ]
-  [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
-  [ ${lines[1]} = '"1","MIDAS site at M4/2295A2 priority 1 on link 105009001; GPS Ref: 502816;178156; Westbound","M4/2295A2",-0.520379557723297,51.4930115367112,"Inactive"' ]
-  [ ${lines[2]} = '"2","MIDAS site at A1M/2259B priority 1 on link 126046101; GPS Ref: 514029;294356; Southbound","A1M/2259B",-0.320275451712423,52.5351577963853,"Active"' ]
-  [ ${lines[3]} = '"17087","MIDAS site at M60/9325L, 024/6/220/306 on M66 northbound within the M60/M62 junction on road M60  at location 53.547722780566000,-2.258293219653000","NO MIDAS ID",-2.258293219653,53.547722780566,"Inactive"' ]
-  [ ${#lines[@]} == 4 ]
+  [ "${lines[0]}" = "id,name,description,longitude,latitude,status" ]
+  [ "${lines[1]}" = '"1","MIDAS site at M4/2295A2 priority 1 on link 105009001; GPS Ref: 502816;178156; Westbound","M4/2295A2",-0.520379557723297,51.4930115367112,"Inactive"' ]
+  [ "${lines[2]}" = '"2","MIDAS site at A1M/2259B priority 1 on link 126046101; GPS Ref: 514029;294356; Southbound","A1M/2259B",-0.320275451712423,52.5351577963853,"Active"' ]
+  [ "${lines[3]}" = '"17087","MIDAS site at M60/9325L, 024/6/220/306 on M66 northbound within the M60/M62 junction on road M60  at location 53.547722780566000,-2.258293219653000","NO MIDAS ID",-2.258293219653,53.547722780566,"Inactive"' ]
+  [ "${#lines[@]}" -eq 4 ]
 }
 
 @test "get_sites 5688" {
@@ -440,9 +440,9 @@ EOF
   echo "result = $output"
 
   [ "$status" -eq 0 ]
-  [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
-  [ ${lines[1]} = '"5688","MIDAS site at M602/6051A priority 1 on link 115042101; GPS Ref: 379545;398603; Eastbound","M602/6051A",-2.30971169539053,53.4837600708868,"Active"' ]
-  [ ${#lines[@]} == 2 ]
+  [ "${lines[0]}" = "id,name,description,longitude,latitude,status" ]
+  [ "${lines[1]}" = '"5688","MIDAS site at M602/6051A priority 1 on link 115042101; GPS Ref: 379545;398603; Eastbound","M602/6051A",-2.30971169539053,53.4837600708868,"Active"' ]
+  [ "${#lines[@]}" -eq 2 ]
 }
 
 @test "get_sites 5688,5689" {
@@ -479,10 +479,10 @@ EOF
   echo "result = $output"
 
   [ "$status" -eq 0 ]
-  [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
-  [ ${lines[1]} = '"5688","MIDAS site at M602/6051A priority 1 on link 115042101; GPS Ref: 379545;398603; Eastbound","M602/6051A",-2.30971169539053,53.4837600708868,"Active"' ]
-  [ ${lines[2]} = '"5689","MIDAS site at A168/9022M priority 1 on link 118013602; GPS Ref: 437757;473402; Southbound","A168/9022M",-1.42335955807952,54.1550672365429,"Active"' ]
-  [ ${#lines[@]} == 3 ]
+  [ "${lines[0]}" = "id,name,description,longitude,latitude,status" ]
+  [ "${lines[1]}" = '"5688","MIDAS site at M602/6051A priority 1 on link 115042101; GPS Ref: 379545;398603; Eastbound","M602/6051A",-2.30971169539053,53.4837600708868,"Active"' ]
+  [ "${lines[2]}" = '"5689","MIDAS site at A168/9022M priority 1 on link 118013602; GPS Ref: 437757;473402; Southbound","A168/9022M",-1.42335955807952,54.1550672365429,"Active"' ]
+  [ "${#lines[@]}" -eq 3 ]
 
 }
 
@@ -520,10 +520,10 @@ EOF
   echo "result = $output"
 
   [ "$status" -eq 0 ]
-  [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
-  [ ${lines[1]} = '"1","MIDAS site at M4/2295A2 priority 1 on link 105009001; GPS Ref: 502816;178156; Westbound","M4/2295A2",-0.520379557723297,51.4930115367112,"Inactive"' ]
-  [ ${lines[2]} = '"2","MIDAS site at A1M/2259B priority 1 on link 126046101; GPS Ref: 514029;294356; Southbound","A1M/2259B",-0.320275451712423,52.5351577963853,"Active"' ]
-  [ ${#lines[@]} == 3 ]
+  [ "${lines[0]}" = "id,name,description,longitude,latitude,status" ]
+  [ "${lines[1]}" = '"1","MIDAS site at M4/2295A2 priority 1 on link 105009001; GPS Ref: 502816;178156; Westbound","M4/2295A2",-0.520379557723297,51.4930115367112,"Inactive"' ]
+  [ "${lines[2]}" = '"2","MIDAS site at A1M/2259B priority 1 on link 126046101; GPS Ref: 514029;294356; Southbound","A1M/2259B",-0.320275451712423,52.5351577963853,"Active"' ]
+  [ "${#lines[@]}" -eq 3 ]
 }
 
 @test "get_site_by_type 31337" {
@@ -539,8 +539,8 @@ EOF
 
   # error dropped gracefully.
   [ "$status" -eq 0 ]
-  [ ${lines[0]} = "id,name,description,longitude,latitude,status" ]
-  [ ${#lines[@]} == 1 ]
+  [ "${lines[0]}" = "id,name,description,longitude,latitude,status" ]
+  [ "${#lines[@]}" -eq 1 ]
 }
 
 @test "get_site_types" {
@@ -578,12 +578,12 @@ EOF
   echo "result = $output"
 
   [ "$status" -eq 0 ]
-  [ ${lines[0]} = "id,description" ]
-  [ ${lines[1]} = "1,MIDAS" ]
-  [ ${lines[2]} = "2,TAME" ]
-  [ ${lines[3]} = "3,TMU" ]
-  [ ${lines[4]} = "4,Legacy" ]
-  [ ${#lines[@]} == 5 ]
+  [ "${lines[0]}" = "id,description" ]
+  [ "${lines[1]}" = "1,MIDAS" ]
+  [ "${lines[2]}" = "2,TAME" ]
+  [ "${lines[3]}" = "3,TMU" ]
+  [ "${lines[4]}" = "4,Legacy" ]
+  [ "${#lines[@]}" -eq 5 ]
 }
 
 @test "_in_bounding_box" {
