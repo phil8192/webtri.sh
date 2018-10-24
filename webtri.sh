@@ -507,9 +507,13 @@ Where <function> is one of:
     Filter site information by site type.
 
 
-  [get_sites_in_box]
+  [get_sites_in_box] Get sites within a defined bounding box.
     args
-      1.
+      1. Bounding box South East Longitude
+      2. Bounding box South East Latitude
+      3. Bounding box North West Longitude
+      4. Bounding box North West Latitude
+
 
 <args> should be inclosed in double quotes.
 
