@@ -215,7 +215,7 @@ get_quality() {
 
 # Public: Get site report.
 #
-# $1 - Comma seperated list of site ids. Or single site id if daily.
+# $1 - Comma seperated list of site ids. Or single site id if daily. (max 30)
 # $2 - ddmmyyyy start period.
 # $3 - ddmmyyyy end period.
 # $4 - overall or daily.
@@ -483,7 +483,7 @@ Where <function> is one of:
 
   [get_report] Get site report.
     args
-      1. Comma seperated list of site ids. Or single site id if daily.
+      1. Comma seperated list of site ids. Or single site id if daily. (max 30)
       2. ddmmyyyy start period.
       3. ddmmyyyy end period.
       4. overall or daily.
