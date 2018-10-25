@@ -326,7 +326,9 @@ get_sites() {
       "$ENDPOINT/sites/$site_ids")
   if [ "$JQ" = true ] ;then
     echo "id,name,description,longitude,latitude,status"
-    echo "$raw" |jq -r '.sites | .[] | map(.) |@csv'
+    echo "$raw" \
+        |sed "s/\\\'/\'/g" \
+        |jq -r '.sites | .[] | map(.) |@csv'
   else
     echo "$raw"
   fi
@@ -393,6 +395,7 @@ get_site_by_type() {
   if [ "$JQ" = true ] ;then
     echo "id,name,description,longitude,latitude,status"
     echo "$raw" \
+        |sed "s/\\\'/\'/g" \
         |jq -r '.sites | .[] | map(.) |@csv'
   else
     echo "$raw"
