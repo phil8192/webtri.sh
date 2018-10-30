@@ -124,6 +124,26 @@ Examples:
   ./webtri.sh -f get_sites_in_box -a "-2.007464 53.344107 -2.485731 53.612572"
 ```
 
+## Example
+
+Get all site data between `01-01-2015` and `30-10-2018` for sites inside a bounding
+box surrounding the Manchester area.
+
+1. Get sites in bounding box.
+
+```bash
+./webtri.sh -f get_sites_in_box -a "-2.007464 53.344107 -2.485731 53.612572" >/tmp/sites.csv
+```
+
+2. For each site, get report, store in `site_{id}.csv`
+
+```bash
+mkdir -p /tmp/road_data
+for i in $(cat /tmp/sites.csv |awk -F ',' '{print $1}' |sed 's/\"//g' |tail +2) ;do
+  ./webtri.sh -f get_report -a "$i daily 01012015 30102018" >/tmp/road_data/"$i".csv
+done
+```
+
 ## Documentation
 
 `webtris.sh` can be sourced in/imported or run directly. see [docs](docs.md) for
