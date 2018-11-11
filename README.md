@@ -132,7 +132,11 @@ box surrounding the Manchester area.
 1. Get sites in bounding box.
 
 ```bash
+# Manchester
 ./webtri.sh -f get_sites_in_box -a "-2.007464 53.344107 -2.485731 53.612572" >/tmp/sites.csv
+
+# London
+./webtri.sh -f get_sites_in_box -a "0.3335853219 51.234408655 -0.5738564134 51.7504400741" >/tmp/sites.csv
 ```
 
 2. For each site, get report, store in `site_{id}.csv`
