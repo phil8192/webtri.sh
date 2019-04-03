@@ -124,7 +124,32 @@ Examples:
   ./webtri.sh -f get_sites_in_box -a "-2.007464 53.344107 -2.485731 53.612572"
 ```
 
-## Example
+# Examples
+
+## All England MIDAS data between November 2018 and March 2019
+
+There are `11,782` (`./webtri.sh -f get_site_by_type -a 1 |wc -l`)
+[MIDAS](https://en.wikipedia.org/wiki/Motorway_Incident_Detection_and_Automatic_Signalling)
+sensors.
+
+1. Get a list of all MIDAS sensors
+
+Available types can be obtained with `./webtri.sh -f get_site_types` (1 = MIDAS, 2 = TAME, 3 = TMU).
+
+```bash
+./webtri.sh -f get_site_by_type -a 1 > sites.csv
+```
+
+2. For each site, download all data in CSV format for the given period:
+
+```bash
+mkdir data
+for i in $(tail +2 sites.csv |awk -F ',' '{print $1}' |tr -d '"') ;do
+  ./webtri.sh -f get_report -a "$i daily 01112018 31032019" > data/"$i".csv
+done
+```
+
+## Sites within a bounding box
 
 Get all site data between `01-01-2015` and `30-10-2018` for sites inside a bounding
 box surrounding the Manchester area.
