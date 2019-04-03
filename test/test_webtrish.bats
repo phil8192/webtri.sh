@@ -538,9 +538,10 @@ EOF
   echo "result = $output"
 
   # error dropped gracefully.
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "id,name,description,longitude,latitude,status" ]
-  [ "${#lines[@]}" -eq 1 ]
+  [ "$status" -eq 1 ]
+  [ "${lines[0]}" = "error: site type must be 1-3." ]
+  [ "${lines[1]}" = "id,name,description,longitude,latitude,status" ]
+  [ "${#lines[@]}" -eq 2 ]
 }
 
 @test "get_site_types" {

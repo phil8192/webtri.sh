@@ -390,6 +390,11 @@ get_site_types() {
 #   * status
 get_site_by_type() {
   site_type=$1
+  if [ "$site_type" -lt 1 ] || [ "$site_type" -gt 3 ] ;then
+    echo "error: site type must be 1-3.">&2
+    echo "id,name,description,longitude,latitude,status"
+    exit 1
+  fi
   raw=$(curl -s -X GET --header 'Accept: application/json' \
       "$ENDPOINT/sitetypes/$site_type/sites")
   if [ "$JQ" = true ] ;then
