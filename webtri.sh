@@ -533,7 +533,6 @@ Examples:
   ./webtri.sh -f get_quality      -a "5688 01012018 04012018 daily"
   ./webtri.sh -f get_quality      -a "5688,5699 01012018 04012018 overall"
   ./webtri.sh -f get_report       -a "5688 daily 01012015 01012018"
-  ./webtri.sh -f get_report       -a "5688 daily 01012018 01012018"
   ./webtri.sh -f get_sites
   ./webtri.sh -f get_sites        -a 5688
   ./webtri.sh -f get_site_types
