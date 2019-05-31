@@ -190,4 +190,4 @@ full function info.
 
 ## License
 
-[MIT](LICSENSE).
+[MIT](LICENSE)
