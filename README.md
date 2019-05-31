@@ -2,8 +2,7 @@
 [![active](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![build](https://travis-ci.org/phil8192/webtri.sh.svg?branch=master)](https://travis-ci.org/datasciencecampus/webtri.sh)
 [![codecov](https://codecov.io/gh/phil8192/webtri.sh/branch/master/graph/badge.svg)](https://codecov.io/gh/phil8192/webtri.sh)
-[![license](https://img.shields.io/aur/license/yaourt.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-
+![GitHub](https://img.shields.io/github/license/phil8192/webtri.sh.svg)
 <p align="center">
   <img src="na/meh.jpg" alt="highways england"/>
 </p>
