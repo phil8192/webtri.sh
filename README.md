@@ -190,5 +190,4 @@ full function info.
 
 ## License
 
-[GNU General Public License family](https://en.wikipedia.org/wiki/GNU_General_Public_License)
-v([3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)).
+[MIT](LICSENSE).
