@@ -1,6 +1,6 @@
 # ./webtri.sh
 [![active](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![build](https://travis-ci.org/phil8192/webtri.sh.svg?branch=master)](https://travis-ci.org/datasciencecampus/webtri.sh)
+[![build](https://travis-ci.org/phil8192/webtri.sh.svg?branch=master)](https://travis-ci.org/phil8192/webtri.sh)
 [![codecov](https://codecov.io/gh/phil8192/webtri.sh/branch/master/graph/badge.svg)](https://codecov.io/gh/phil8192/webtri.sh)
 ![GitHub](https://img.shields.io/github/license/phil8192/webtri.sh.svg)
 <p align="center">
